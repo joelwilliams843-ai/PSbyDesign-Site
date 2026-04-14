@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth, formatApiError } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -33,10 +33,10 @@ export default function ChangePasswordPage({ forced = false, onComplete }) {
 
     setLoading(true);
     try {
-      await axios.post(`${API}/auth/change-password`, {
+      await api.post(`${API}/auth/change-password`, {
         current_password: currentPassword,
         new_password: newPassword
-      }, { withCredentials: true });
+      });
       setSuccess(true);
       if (onComplete) {
         setTimeout(() => onComplete(), 1500);

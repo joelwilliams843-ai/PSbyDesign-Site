@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -32,8 +32,8 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     try {
       const [statsRes, participantsRes] = await Promise.all([
-        axios.get(`${API}/dashboard/admin`, { withCredentials: true }),
-        axios.get(`${API}/participants`, { withCredentials: true })
+        api.get(`${API}/dashboard/admin`),
+        api.get(`${API}/participants`)
       ]);
       setStats(statsRes.data);
       setParticipants(participantsRes.data);

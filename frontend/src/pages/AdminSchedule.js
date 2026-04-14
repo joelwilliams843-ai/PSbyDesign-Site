@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api as axios } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -25,7 +25,7 @@ export default function AdminSchedule() {
 
   const fetchRequests = async () => {
     try {
-      const { data } = await axios.get(`${API}/schedule/all`, { withCredentials: true });
+      const { data } = await axios.get(`${API}/schedule/all`);
       setRequests(data);
     } catch (err) {
       console.error(err);
@@ -43,7 +43,7 @@ export default function AdminSchedule() {
         admin_notes: adminNotes,
         adjusted_date: adjustedDate || null,
         adjusted_time: adjustedTime || null
-      }, { withCredentials: true });
+      });
       setSelected(null);
       setAdminNotes('');
       setAdjustedDate('');

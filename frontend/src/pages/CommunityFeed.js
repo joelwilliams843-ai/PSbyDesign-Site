@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -23,7 +23,7 @@ export default function CommunityFeed() {
 
   const fetchPosts = async () => {
     try {
-      const { data } = await axios.get(`${API}/feed`, { withCredentials: true });
+      const { data } = await api.get(`${API}/feed`);
       setPosts(data);
     } catch (err) {
       console.error(err);
@@ -36,7 +36,7 @@ export default function CommunityFeed() {
     if (!content.trim()) return;
     setSubmitting(true);
     try {
-      await axios.post(`${API}/feed`, { content, type: postType }, { withCredentials: true });
+      await api.post(`${API}/feed`, { content, type: postType });
       setContent('');
       fetchPosts();
     } catch (err) {
@@ -48,7 +48,7 @@ export default function CommunityFeed() {
 
   const handleLike = async (postId) => {
     try {
-      await axios.post(`${API}/feed/${postId}/like`, {}, { withCredentials: true });
+      await api.post(`${API}/feed/${postId}/like`, {});
       fetchPosts();
     } catch (err) {
       console.error(err);

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -14,7 +13,7 @@ import {
   UserPlus, Loader2, Check, Clock, FileText, Upload, AlertCircle,
   MoreVertical, KeyRound, UserX, UserCheck, Archive, Shield
 } from 'lucide-react';
-import { formatApiError } from '../contexts/AuthContext';
+import { api, formatApiError } from '../contexts/AuthContext';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -44,7 +43,7 @@ export default function AdminParticipants() {
 
   const fetchParticipants = async () => {
     try {
-      const { data } = await axios.get(`${API}/participants`, { withCredentials: true });
+      const { data } = await api.get(`${API}/participants`);
       setParticipants(data);
     } catch (err) {
       console.error(err);
@@ -62,7 +61,7 @@ export default function AdminParticipants() {
     }
     setCreating(true);
     try {
-      await axios.post(`${API}/participants`, createForm, { withCredentials: true });
+      await api.post(`${API}/participants`, createForm);
       setShowCreate(false);
       setCreateForm({ name: '', email: '', password: '' });
       fetchParticipants();
@@ -76,7 +75,7 @@ export default function AdminParticipants() {
   const handleToggleActive = async (participant) => {
     setActionLoading(true);
     try {
-      await axios.put(`${API}/participants/${participant.id}/deactivate`, {}, { withCredentials: true });
+      await api.put(`${API}/participants/${participant.id}/deactivate`, {});
       fetchParticipants();
     } catch (err) {
       console.error(err);
@@ -89,9 +88,9 @@ export default function AdminParticipants() {
     if (!showResetPassword || resetPassword.length < 8) return;
     setActionLoading(true);
     try {
-      await axios.post(`${API}/participants/${showResetPassword.id}/reset-password`, {
+      await api.post(`${API}/participants/${showResetPassword.id}/reset-password`, {
         new_password: resetPassword
-      }, { withCredentials: true });
+      });
       setShowResetPassword(null);
       setResetPassword('');
     } catch (err) {
@@ -105,7 +104,7 @@ export default function AdminParticipants() {
     if (!showArchive) return;
     setActionLoading(true);
     try {
-      await axios.delete(`${API}/participants/${showArchive.id}`, { withCredentials: true });
+      await api.delete(`${API}/participants/${showArchive.id}`);
       setShowArchive(null);
       fetchParticipants();
     } catch (err) {
@@ -384,8 +383,8 @@ function ParticipantDetail({ participant, onClose }) {
   const fetchData = async () => {
     try {
       const [sessRes, resRes] = await Promise.all([
-        axios.get(`${API}/sessions/${participant.id}`, { withCredentials: true }),
-        axios.get(`${API}/resources/${participant.id}`, { withCredentials: true })
+        api.get(`${API}/sessions/${participant.id}`),
+        api.get(`${API}/resources/${participant.id}`)
       ]);
       setSessions(sessRes.data);
       setResources(resRes.data);
@@ -398,10 +397,10 @@ function ParticipantDetail({ participant, onClose }) {
 
   const markComplete = async (sessionId, notes) => {
     try {
-      await axios.put(`${API}/sessions/${sessionId}`, {
+      await api.put(`${API}/sessions/${sessionId}`, {
         status: 'completed',
         notes: notes || ''
-      }, { withCredentials: true });
+      });
       fetchData();
     } catch (err) {
       console.error(err);
@@ -417,8 +416,7 @@ function ParticipantDetail({ participant, onClose }) {
       formData.append('file', file);
       formData.append('participant_id', participant.id);
       formData.append('resource_type', uploadType);
-      await axios.post(`${API}/resources/upload`, formData, {
-        withCredentials: true,
+      await api.post(`${API}/resources/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setUploadType('');

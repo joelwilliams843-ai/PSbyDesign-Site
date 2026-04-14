@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api as axios } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -35,7 +35,7 @@ export default function AdminResources() {
 
   const fetchParticipants = async () => {
     try {
-      const { data } = await axios.get(`${API}/participants`, { withCredentials: true });
+      const { data } = await axios.get(`${API}/participants`);
       setParticipants(data);
       if (data.length > 0) setSelectedParticipant(data[0].id);
     } catch (err) {
@@ -47,7 +47,7 @@ export default function AdminResources() {
 
   const fetchResources = async () => {
     try {
-      const { data } = await axios.get(`${API}/resources/${selectedParticipant}`, { withCredentials: true });
+      const { data } = await axios.get(`${API}/resources/${selectedParticipant}`);
       setResources(data);
     } catch (err) {
       console.error(err);
@@ -64,7 +64,6 @@ export default function AdminResources() {
       formData.append('participant_id', selectedParticipant);
       formData.append('resource_type', uploadType);
       await axios.post(`${API}/resources/upload`, formData, {
-        withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setUploadType('');
@@ -79,7 +78,7 @@ export default function AdminResources() {
 
   const handleDelete = async (resourceId) => {
     try {
-      await axios.delete(`${API}/resources/${resourceId}`, { withCredentials: true });
+      await axios.delete(`${API}/resources/${resourceId}`);
       fetchResources();
     } catch (err) {
       console.error(err);

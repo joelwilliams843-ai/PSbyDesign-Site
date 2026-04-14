@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -32,7 +32,7 @@ export default function SchedulePage() {
     if (!user?._id && !user?.id) return;
     try {
       const uid = user._id || user.id;
-      const { data } = await axios.get(`${API}/schedule/${uid}`, { withCredentials: true });
+      const { data } = await api.get(`${API}/schedule/${uid}`);
       setRequests(data);
     } catch (err) {
       console.error(err);
@@ -46,11 +46,11 @@ export default function SchedulePage() {
     if (!date || !time) return;
     setSubmitting(true);
     try {
-      await axios.post(`${API}/schedule/request`, {
+      await api.post(`${API}/schedule/request`, {
         requested_date: format(date, 'yyyy-MM-dd'),
         requested_time: time,
         notes
-      }, { withCredentials: true });
+      });
       setShowForm(false);
       setDate(null);
       setTime('');

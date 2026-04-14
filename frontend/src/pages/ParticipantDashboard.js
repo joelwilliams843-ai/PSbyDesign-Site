@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import ProgressTracker from '../components/ProgressTracker';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -39,7 +39,7 @@ export default function ParticipantDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const { data: d } = await axios.get(`${API}/dashboard/participant`, { withCredentials: true });
+      const { data: d } = await api.get(`${API}/dashboard/participant`);
       setData(d);
     } catch (err) {
       console.error('Dashboard fetch error:', err);

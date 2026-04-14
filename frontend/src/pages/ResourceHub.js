@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -40,7 +40,7 @@ export default function ResourceHub() {
     if (!user?._id && !user?.id) return;
     try {
       const uid = user._id || user.id;
-      const { data } = await axios.get(`${API}/resources/${uid}`, { withCredentials: true });
+      const { data } = await api.get(`${API}/resources/${uid}`);
       setResources(data);
     } catch (err) {
       console.error(err);
@@ -52,8 +52,7 @@ export default function ResourceHub() {
   const handleDownload = async (resource) => {
     setDownloading(resource.id);
     try {
-      const response = await axios.get(`${API}/resources/download/${resource.id}`, {
-        withCredentials: true,
+      const response = await api.get(`${API}/resources/download/${resource.id}`, {
         responseType: 'blob'
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
