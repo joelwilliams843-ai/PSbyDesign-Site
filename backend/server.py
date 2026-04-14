@@ -225,7 +225,12 @@ async def get_me(request: Request):
 
 @api_router.post("/auth/refresh")
 async def refresh_token(request: Request, response: Response):
+    # Check cookie first, then Authorization header
     token = request.cookies.get("refresh_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
     if not token:
         raise HTTPException(status_code=401, detail="No refresh token")
     try:
@@ -236,7 +241,7 @@ async def refresh_token(request: Request, response: Response):
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
         access = create_access_token(str(user["_id"]), user["email"])
-        response.set_cookie(key="access_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+        set_auth_cookies(response, access, "")
         return {"message": "Token refreshed", "access_token": access}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Refresh token expired")
@@ -674,13 +679,39 @@ async def admin_dashboard(request: Request):
 
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[os.environ.get("FRONTEND_URL", "http://localhost:3000")],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# The Kubernetes ingress proxy adds its own CORS headers (access-control-allow-origin: *)
+# which conflicts with allow_credentials=True. Browsers reject * + credentials.
+# Solution: Use a custom middleware that sets the specific origin header AFTER
+# the proxy's * header, effectively overriding it at the response level.
+
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class CORSFixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Handle preflight
+        if request.method == "OPTIONS":
+            from starlette.responses import Response as StarletteResponse
+            origin = request.headers.get("origin", "")
+            resp = StarletteResponse(status_code=200)
+            resp.headers["access-control-allow-origin"] = origin or "*"
+            resp.headers["access-control-allow-credentials"] = "true"
+            resp.headers["access-control-allow-methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+            resp.headers["access-control-allow-headers"] = "content-type, authorization, cookie"
+            resp.headers["access-control-max-age"] = "3600"
+            return resp
+
+        response = await call_next(request)
+
+        # Override the proxy's * with the actual origin
+        origin = request.headers.get("origin", "")
+        if origin:
+            response.headers["access-control-allow-origin"] = origin
+        response.headers["access-control-allow-credentials"] = "true"
+        response.headers["access-control-allow-methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["access-control-allow-headers"] = "content-type, authorization, cookie"
+        return response
+
+app.add_middleware(CORSFixMiddleware)
 
 async def seed_admin():
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@clarity.coach").lower().strip()

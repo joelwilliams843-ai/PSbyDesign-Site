@@ -4,31 +4,32 @@ import axios from 'axios';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const AuthContext = createContext(null);
 
-// Token storage helpers
-function getStoredToken() {
-  try { return localStorage.getItem('clarity_access_token'); } catch { return null; }
+// Pure localStorage token management — no cookies
+function getToken() {
+  try { return localStorage.getItem('clarity_token'); } catch { return null; }
 }
-function getStoredRefresh() {
-  try { return localStorage.getItem('clarity_refresh_token'); } catch { return null; }
+function getRefreshToken() {
+  try { return localStorage.getItem('clarity_refresh'); } catch { return null; }
 }
 function storeTokens(access, refresh) {
   try {
-    if (access) localStorage.setItem('clarity_access_token', access);
-    if (refresh) localStorage.setItem('clarity_refresh_token', refresh);
-  } catch { /* localStorage unavailable */ }
+    if (access) localStorage.setItem('clarity_token', access);
+    if (refresh) localStorage.setItem('clarity_refresh', refresh);
+  } catch { /* noop */ }
 }
-function clearStoredTokens() {
+function clearTokens() {
   try {
-    localStorage.removeItem('clarity_access_token');
-    localStorage.removeItem('clarity_refresh_token');
+    localStorage.removeItem('clarity_token');
+    localStorage.removeItem('clarity_refresh');
   } catch { /* noop */ }
 }
 
-// Axios instance with interceptor for token fallback
-const api = axios.create({ withCredentials: true });
+// Axios instance — NO withCredentials (avoids CORS * + credentials conflict)
+const api = axios.create();
 
+// Add Authorization header to every request
 api.interceptors.request.use(config => {
-  const token = getStoredToken();
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -40,21 +41,27 @@ api.interceptors.response.use(
   res => res,
   async error => {
     const orig = error.config;
-    if (error.response?.status === 401 && !orig._retry && !orig.url?.includes('/auth/login') && !orig.url?.includes('/auth/refresh')) {
+    if (
+      error.response?.status === 401 &&
+      !orig._retry &&
+      !orig.url?.includes('/auth/login') &&
+      !orig.url?.includes('/auth/refresh')
+    ) {
       orig._retry = true;
-      try {
-        const refreshToken = getStoredRefresh();
-        const headers = refreshToken ? { Authorization: `Bearer ${refreshToken}` } : {};
-        const { data } = await axios.post(`${API}/auth/refresh`, {}, { withCredentials: true, headers });
-        if (data.access_token) {
-          storeTokens(data.access_token, null);
-          orig.headers.Authorization = `Bearer ${data.access_token}`;
-        }
-        return api(orig);
-      } catch {
-        clearStoredTokens();
-        return Promise.reject(error);
+      const refresh = getRefreshToken();
+      if (refresh) {
+        try {
+          const { data } = await axios.post(`${API}/auth/refresh`, {}, {
+            headers: { Authorization: `Bearer ${refresh}` }
+          });
+          if (data.access_token) {
+            storeTokens(data.access_token, null);
+            orig.headers.Authorization = `Bearer ${data.access_token}`;
+            return api(orig);
+          }
+        } catch { /* refresh failed */ }
       }
+      clearTokens();
     }
     return Promise.reject(error);
   }
@@ -67,11 +74,17 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const checkAuth = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setUser(false);
+      setLoading(false);
+      return;
+    }
     try {
       const { data } = await api.get(`${API}/auth/me`);
       setUser(data);
     } catch {
-      clearStoredTokens();
+      clearTokens();
       setUser(false);
     } finally {
       setLoading(false);
@@ -84,13 +97,12 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const { data } = await api.post(`${API}/auth/login`, { email, password });
-    // Store tokens from response body as fallback
     if (data.access_token) {
       storeTokens(data.access_token, data.refresh_token);
     }
-    // Set user without tokens in state
     const userData = {
       id: data.id,
+      _id: data.id,
       email: data.email,
       name: data.name,
       role: data.role,
@@ -101,10 +113,8 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try {
-      await api.post(`${API}/auth/logout`);
-    } catch { /* ignore */ }
-    clearStoredTokens();
+    try { await api.post(`${API}/auth/logout`); } catch { /* noop */ }
+    clearTokens();
     setUser(false);
   };
 
