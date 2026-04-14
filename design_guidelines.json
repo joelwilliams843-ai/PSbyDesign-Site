@@ -1,0 +1,91 @@
+{
+  "theme": "light",
+  "archetype": "Swiss & High-Contrast (Archetype 4) mixed with Enterprise Premium",
+  "colors": {
+    "background": "#FFFFFF",
+    "surface": "#F8FAFC",
+    "surface_hover": "#F1F5F9",
+    "primary": "#1E3A5F",
+    "primary_hover": "#152D4A",
+    "accent": "#0F766E",
+    "text_main": "#0F172A",
+    "text_muted": "#64748B",
+    "border": "#E2E8F0",
+    "success": "#10B981",
+    "warning": "#F59E0B"
+  },
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "Inter",
+    "rules": {
+      "h1": "text-4xl sm:text-5xl tracking-tight font-semibold text-slate-900",
+      "h2": "text-2xl sm:text-3xl tracking-tight font-medium text-slate-900",
+      "h3": "text-xl sm:text-2xl tracking-tight font-medium text-slate-900",
+      "body": "text-base leading-relaxed text-slate-600",
+      "small": "text-sm text-slate-500",
+      "overline": "uppercase tracking-[0.2em] text-xs font-semibold text-slate-500"
+    }
+  },
+  "spacing_and_layout": {
+    "grid_strategy": "Control Room Grid (Dense, functional, high-clarity)",
+    "container_padding": "p-6 md:p-8",
+    "gap": "gap-6 md:gap-8",
+    "alignment": "Left-align for dense content, prioritize optical alignment.",
+    "navigation": "Sticky sidebar navigation for desktop, with active states clearly marked (e.g., bold text, light background fill like slate-100, and primary color text). Mobile uses a clean hamburger menu."
+  },
+  "components": {
+    "cards": {
+      "style": "Subtle roundness (rounded-lg max 8px), flat white background, 1px border-slate-200, shadow-sm. No heavy shadows. Hover state: slight lift (-translate-y-[1px]) and shadow-md."
+    },
+    "buttons": {
+      "primary": "bg-[#1E3A5F] text-white hover:bg-[#152D4A] rounded-md px-4 py-2 font-medium transition-colors",
+      "secondary": "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-md px-4 py-2 font-medium transition-colors",
+      "accent": "bg-[#0F766E] text-white hover:bg-[#0D635D] rounded-md px-4 py-2 font-medium transition-colors"
+    },
+    "progress_tracker": {
+      "style": "Linear timeline or bento-grid of session cards. Use sharp, high-contrast markers for completed sessions (e.g., solid #1E3A5F with checkmark). Upcoming sessions muted (text-slate-400, border-slate-200)."
+    },
+    "resource_hub": {
+      "style": "Grid layout (grid-cols-2 md:grid-cols-3). Document cards should feel tactile but clean. Include document type icons (lucide-react). Use subtle hover effects to indicate downloadability."
+    },
+    "engagement_feed": {
+      "style": "Vertical list format, generous spacing between items. Clean divider lines (border-b border-slate-100) instead of wrapping each item in a card. Minimalist like feature for engagement."
+    }
+  },
+  "motion": {
+    "hover": "transition-all duration-200 ease-in-out",
+    "entrance": "fade-in and slide-up for lists (staggered if possible)",
+    "rules": "Respect prefers-reduced-motion. Animations should be micro-interactions, not distracting."
+  },
+  "icons_and_assets": {
+    "library": "lucide-react",
+    "stroke_width": "1.5 for a premium, lightweight feel"
+  },
+  "media": {
+    "image_urls": {
+      "admin_avatar": {
+        "url": "https://images.unsplash.com/photo-1758518727888-ffa196002e59?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2ODl8MHwxfHNlYXJjaHwyfHxleGVjdXRpdmUlMjBwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzYxOTA2MjB8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Executive Admin Portrait",
+        "category": "avatars"
+      },
+      "participant_avatar_1": {
+        "url": "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3NjE2NTY2MHww&ixlib=rb-4.1.0&q=85",
+        "description": "Participant Portrait 1",
+        "category": "avatars"
+      },
+      "participant_avatar_2": {
+        "url": "https://images.unsplash.com/photo-1581065178047-8ee15951ede6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwzfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3NjE2NTY2MHww&ixlib=rb-4.1.0&q=85",
+        "description": "Participant Portrait 2",
+        "category": "avatars"
+      }
+    }
+  },
+  "instructions_to_main_agent": [
+    "Ensure all interactive elements have data-testid attributes.",
+    "Do not use generic HTML components for complex interactions; use Shadcn equivalents (e.g., Dialog, Select, Tabs).",
+    "Maintain high contrast. Do not use pure gray text without a slight blue tint (e.g., use slate over gray).",
+    "Ensure the dashboard feels like a premium workspace, like Notion. Use generous padding, subtle borders, and ample whitespace.",
+    "Progress tracker should be the visual centerpiece of the participant view.",
+    "Do not use heavy shadows or gradients. Stick to flat, clean surfaces with crisp typography."
+  ]
+}
