@@ -88,7 +88,7 @@ export default function SchedulePage() {
         <Button
           onClick={() => setShowForm(!showForm)}
           data-testid="request-session-btn"
-          className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+          className="bg-[#0F2B3C] hover:bg-[#0A2233]"
         >
           <Plus size={16} className="mr-2" /> Request Session
         </Button>
@@ -152,7 +152,7 @@ export default function SchedulePage() {
                   type="submit"
                   disabled={submitting || !date || !time}
                   data-testid="submit-schedule-btn"
-                  className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+                  className="bg-[#0F2B3C] hover:bg-[#0A2233]"
                 >
                   {submitting ? <Loader2 size={16} className="animate-spin" /> : 'Submit Request'}
                 </Button>
@@ -197,7 +197,7 @@ export default function SchedulePage() {
                         <p className="text-xs text-slate-500 mt-1 italic">Coach: {r.admin_notes}</p>
                       )}
                       {r.adjusted_date && (
-                        <p className="text-xs text-[#0F766E] mt-1 font-medium">
+                        <p className="text-xs text-[#0B7A6F] mt-1 font-medium">
                           Adjusted to: {r.adjusted_date} {r.adjusted_time && `at ${r.adjusted_time}`}
                         </p>
                       )}

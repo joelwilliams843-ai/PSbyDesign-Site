@@ -53,10 +53,10 @@ export default function AdminDashboard() {
   }
 
   const statCards = [
-    { label: 'Participants', value: stats?.total_participants || 0, icon: Users, color: '#1E3A5F' },
-    { label: 'Completion Rate', value: `${stats?.completion_rate || 0}%`, icon: TrendingUp, color: '#0F766E' },
+    { label: 'Participants', value: stats?.total_participants || 0, icon: Users, color: '#0F2B3C' },
+    { label: 'Completion Rate', value: `${stats?.completion_rate || 0}%`, icon: TrendingUp, color: '#0B7A6F' },
     { label: 'Pending Requests', value: stats?.pending_schedule_requests || 0, icon: CalendarClock, color: '#F59E0B' },
-    { label: 'Resources', value: stats?.total_resources || 0, icon: FolderOpen, color: '#1E3A5F' },
+    { label: 'Resources', value: stats?.total_resources || 0, icon: FolderOpen, color: '#0F2B3C' },
   ];
 
   return (
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-base font-semibold text-slate-900">Participants</CardTitle>
             <button
               onClick={() => navigate('/admin/participants')}
-              className="text-xs text-[#1E3A5F] hover:text-[#152D4A] font-medium flex items-center gap-1 transition-colors"
+              className="text-xs text-[#0F2B3C] hover:text-[#0A2233] font-medium flex items-center gap-1 transition-colors"
               data-testid="manage-participants-btn"
             >
               Manage <ArrowRight size={12} />
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-slate-400 mb-3">No participants yet</p>
               <button
                 onClick={() => navigate('/admin/participants')}
-                className="text-sm text-[#1E3A5F] hover:text-[#152D4A] font-medium"
+                className="text-sm text-[#0F2B3C] hover:text-[#0A2233] font-medium"
                 data-testid="add-first-participant-btn"
               >
                 Add your first participant
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
             <div className="space-y-3">
               {participants.slice(0, 6).map(p => (
                 <div key={p.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                  <div className="w-9 h-9 rounded-full bg-[#1E3A5F] flex items-center justify-center text-white text-sm font-semibold shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[#0F2B3C] flex items-center justify-center text-white text-sm font-semibold shrink-0">
                     {p.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">

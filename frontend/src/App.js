@@ -1,6 +1,22 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
+
+// PSD Website components
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+// PSD Website pages
+import HomePage from "./pages/site/HomePage";
+import AboutPage from "./pages/site/AboutPage";
+import ServicesPage from "./pages/site/ServicesPage";
+import IndustriesPage from "./pages/site/IndustriesPage";
+import ClarityLandingPage from "./pages/site/ClarityLandingPage";
+import ContactPage from "./pages/site/ContactPage";
+
+// Clarity App components
 import Sidebar from "./components/Sidebar";
 import LoginPage from "./pages/LoginPage";
 import ParticipantDashboard from "./pages/ParticipantDashboard";
@@ -12,49 +28,28 @@ import ResourceHub from "./pages/ResourceHub";
 import SchedulePage from "./pages/SchedulePage";
 import CommunityFeed from "./pages/CommunityFeed";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
-import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 size={24} className="animate-spin text-[#1E3A5F]" />
-          <p className="text-sm text-slate-400">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) return <Navigate to="/login" replace />;
-  if (user.force_password_change) return <Navigate to="/change-password" replace />;
-  if (requireAdmin && user.role !== "admin") return <Navigate to="/" replace />;
-  return children;
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
 }
 
-function ForcePasswordRoute() {
-  const { user, loading, clearForcePasswordChange } = useAuth();
-  const navigate = useNavigate();
-
-  if (loading) return null;
-  if (!user) return <Navigate to="/login" replace />;
-  if (!user.force_password_change) return <Navigate to="/" replace />;
-
+// PSD Website layout (Navbar + Footer)
+function SiteLayout({ children }) {
   return (
-    <ChangePasswordPage
-      forced={true}
-      onComplete={() => {
-        clearForcePasswordChange();
-        navigate("/");
-      }}
-    />
+    <>
+      <Navbar />
+      <main className="min-h-screen">{children}</main>
+      <Footer />
+    </>
   );
 }
 
-function DashboardLayout({ children }) {
+// Clarity App layout (Sidebar)
+function AppLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-[#F8FAFC]">
       <Sidebar />
@@ -65,116 +60,120 @@ function DashboardLayout({ children }) {
   );
 }
 
-function DashboardHome() {
-  const { user } = useAuth();
-  if (user?.role === "admin") return <AdminDashboard />;
-  return <ParticipantDashboard />;
-}
-
-function AppRoutes() {
+// Protected route for Clarity app
+function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <Loader2 size={24} className="animate-spin text-[#1E3A5F]" />
+        <Loader2 size={24} className="animate-spin text-[#0B7A6F]" />
+      </div>
+    );
+  }
+
+  if (!user) return <Navigate to="/clarity/app/login" replace />;
+  if (user.force_password_change) return <Navigate to="/clarity/app/change-password" replace />;
+  if (requireAdmin && user.role !== "admin") return <Navigate to="/clarity/app" replace />;
+  return children;
+}
+
+function ForcePasswordRoute() {
+  const { user, loading, clearForcePasswordChange } = useAuth();
+  const navigate = useNavigate();
+
+  if (loading) return null;
+  if (!user) return <Navigate to="/clarity/app/login" replace />;
+  if (!user.force_password_change) return <Navigate to="/clarity/app" replace />;
+
+  return (
+    <ChangePasswordPage
+      forced={true}
+      onComplete={() => {
+        clearForcePasswordChange();
+        navigate("/clarity/app");
+      }}
+    />
+  );
+}
+
+function ClarityDashboardHome() {
+  const { user } = useAuth();
+  if (user?.role === "admin") return <AdminDashboard />;
+  return <ParticipantDashboard />;
+}
+
+function ClarityLoginRedirect() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 size={24} className="animate-spin text-[#0B7A6F]" /></div>;
+  if (user) return <Navigate to="/clarity/app" replace />;
+  return <Navigate to="/clarity/app/login" replace />;
+}
+
+function AppRoutes() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  // Determine if we're in the Clarity app
+  const isClarityApp = location.pathname.startsWith('/clarity/app');
+
+  if (isClarityApp && loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 size={24} className="animate-spin text-[#0B7A6F]" />
       </div>
     );
   }
 
   return (
     <Routes>
-      <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/change-password" element={<ForcePasswordRoute />} />
+      {/* ========== PSD WEBSITE ROUTES ========== */}
+      <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
+      <Route path="/about" element={<SiteLayout><AboutPage /></SiteLayout>} />
+      <Route path="/services" element={<SiteLayout><ServicesPage /></SiteLayout>} />
+      <Route path="/industries" element={<SiteLayout><IndustriesPage /></SiteLayout>} />
+      <Route path="/clarity" element={<SiteLayout><ClarityLandingPage /></SiteLayout>} />
+      <Route path="/contact" element={<SiteLayout><ContactPage /></SiteLayout>} />
 
-      {/* Dashboard Home */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <DashboardHome />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
+      {/* ========== CLARITY APP ROUTES ========== */}
+      <Route path="/clarity/app/login" element={
+        user ? <Navigate to="/clarity/app" replace /> : <LoginPage />
+      } />
+      <Route path="/clarity/app/change-password" element={<ForcePasswordRoute />} />
+
+      {/* Clarity App Entry - redirect to login or dashboard */}
+      <Route path="/clarity/app" element={
+        <ProtectedRoute>
+          <AppLayout><ClarityDashboardHome /></AppLayout>
+        </ProtectedRoute>
+      } />
 
       {/* Participant routes */}
-      <Route
-        path="/resources"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <ResourceHub />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/schedule"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <SchedulePage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/community"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <CommunityFeed />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/clarity/app/resources" element={
+        <ProtectedRoute><AppLayout><ResourceHub /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/clarity/app/schedule" element={
+        <ProtectedRoute><AppLayout><SchedulePage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/clarity/app/community" element={
+        <ProtectedRoute><AppLayout><CommunityFeed /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/clarity/app/settings" element={
+        <ProtectedRoute><AppLayout><ChangePasswordPage forced={false} /></AppLayout></ProtectedRoute>
+      } />
 
       {/* Admin routes */}
-      <Route
-        path="/admin/participants"
-        element={
-          <ProtectedRoute requireAdmin>
-            <DashboardLayout>
-              <AdminParticipants />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/resources"
-        element={
-          <ProtectedRoute requireAdmin>
-            <DashboardLayout>
-              <AdminResources />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/schedule"
-        element={
-          <ProtectedRoute requireAdmin>
-            <DashboardLayout>
-              <AdminSchedule />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/clarity/app/admin/participants" element={
+        <ProtectedRoute requireAdmin><AppLayout><AdminParticipants /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/clarity/app/admin/resources" element={
+        <ProtectedRoute requireAdmin><AppLayout><AdminResources /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/clarity/app/admin/schedule" element={
+        <ProtectedRoute requireAdmin><AppLayout><AdminSchedule /></AppLayout></ProtectedRoute>
+      } />
 
-      {/* Settings */}
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <ChangePasswordPage forced={false} />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
-
+      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -183,6 +182,7 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>

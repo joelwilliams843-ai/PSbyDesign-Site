@@ -102,8 +102,8 @@ export default function ParticipantDashboard() {
         <Card className="border border-slate-200 shadow-sm animate-fade-in-up stagger-2" data-testid="journey-card">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#0F766E]/10 flex items-center justify-center shrink-0">
-                <Sparkles size={18} className="text-[#0F766E]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0B7A6F]/10 flex items-center justify-center shrink-0">
+                <Sparkles size={18} className="text-[#0B7A6F]" />
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
@@ -127,8 +127,8 @@ export default function ParticipantDashboard() {
         <Card className="border border-slate-200 shadow-sm animate-fade-in-up stagger-3" data-testid="next-session-card">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#1E3A5F]/10 flex items-center justify-center shrink-0">
-                <CalendarClock size={18} className="text-[#1E3A5F]" />
+              <div className="w-10 h-10 rounded-xl bg-[#0F2B3C]/10 flex items-center justify-center shrink-0">
+                <CalendarClock size={18} className="text-[#0F2B3C]" />
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
@@ -146,7 +146,7 @@ export default function ParticipantDashboard() {
                     </p>
                   </>
                 ) : (
-                  <p className="text-lg font-semibold text-[#0F766E]">All sessions complete!</p>
+                  <p className="text-lg font-semibold text-[#0B7A6F]">All sessions complete!</p>
                 )}
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function ParticipantDashboard() {
               <CardTitle className="text-base font-semibold text-slate-900">Resources</CardTitle>
               <button
                 onClick={() => navigate('/resources')}
-                className="text-xs text-[#1E3A5F] hover:text-[#152D4A] font-medium flex items-center gap-1 transition-colors"
+                className="text-xs text-[#0F2B3C] hover:text-[#0A2233] font-medium flex items-center gap-1 transition-colors"
                 data-testid="view-all-resources-btn"
               >
                 View all <ArrowRight size={12} />
@@ -180,7 +180,7 @@ export default function ParticipantDashboard() {
               <div className="space-y-2">
                 {resources.slice(0, 4).map(r => (
                   <div key={r.id} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 transition-colors">
-                    <FileText size={16} className="text-[#1E3A5F] shrink-0" />
+                    <FileText size={16} className="text-[#0F2B3C] shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-700 truncate">{r.original_filename}</p>
                       <p className="text-xs text-slate-400">{RESOURCE_LABELS[r.type] || r.type}</p>
@@ -202,7 +202,7 @@ export default function ParticipantDashboard() {
               {sessions.slice(0, 5).map(s => (
                 <div key={s.id || s.session_number} className="flex items-center gap-3 p-2.5 rounded-lg">
                   {s.status === 'completed' ? (
-                    <CheckCircle2 size={16} className="text-[#0F766E] shrink-0" />
+                    <CheckCircle2 size={16} className="text-[#0B7A6F] shrink-0" />
                   ) : (
                     <Clock size={16} className="text-slate-300 shrink-0" />
                   )}
@@ -213,7 +213,7 @@ export default function ParticipantDashboard() {
                   </div>
                   <Badge
                     variant={s.status === 'completed' ? 'default' : 'secondary'}
-                    className={`text-[10px] ${s.status === 'completed' ? 'bg-[#0F766E] hover:bg-[#0F766E]' : ''}`}
+                    className={`text-[10px] ${s.status === 'completed' ? 'bg-[#0B7A6F] hover:bg-[#0B7A6F]' : ''}`}
                   >
                     {s.status === 'completed' ? 'Done' : 'Upcoming'}
                   </Badge>

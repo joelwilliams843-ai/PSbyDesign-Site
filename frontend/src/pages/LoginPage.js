@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const data = await login(email, password);
-      navigate('/');
+      navigate('/clarity/app');
     } catch (err) {
       setError(formatApiError(err.response?.data?.detail) || err.message);
     } finally {
@@ -34,11 +34,11 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8 sm:p-12">
         <div className="w-full max-w-sm">
           <div className="mb-10">
-            <h1 className="text-2xl font-semibold tracking-tight text-[#1E3A5F] mb-1">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#0B7A6F] mb-1">
               CLARITY
             </h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-medium mb-8">
-              Executive Coaching Platform
+              A Performance Solution by Design
             </p>
             <h2 className="text-xl font-medium text-slate-900 mb-1">
               Welcome back
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 placeholder="name@company.com"
                 required
                 data-testid="login-email"
-                className="h-11 bg-white border-slate-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]/20"
+                className="h-11 bg-white border-slate-200 focus:border-[#0F2B3C] focus:ring-[#0F2B3C]/20"
               />
             </div>
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 required
                 data-testid="login-password"
-                className="h-11 bg-white border-slate-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]/20"
+                className="h-11 bg-white border-slate-200 focus:border-[#0F2B3C] focus:ring-[#0F2B3C]/20"
               />
             </div>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               data-testid="login-submit"
-              className="w-full h-11 bg-[#1E3A5F] hover:bg-[#152D4A] text-white font-medium transition-colors"
+              className="w-full h-11 bg-[#0F2B3C] hover:bg-[#0A2233] text-white font-medium transition-colors"
             >
               {loading ? (
                 <Loader2 size={18} className="animate-spin" />
@@ -108,15 +108,22 @@ export default function LoginPage() {
           <p className="mt-8 text-xs text-slate-400 text-center">
             Accounts are provisioned by your coaching administrator
           </p>
+          <div className="mt-4 text-center">
+            <a href="/" className="text-xs text-[#0B7A6F] hover:text-[#096B62] font-medium transition-colors">
+              &larr; Back to psbydesign.com
+            </a>
+          </div>
         </div>
       </div>
 
       {/* Right - Brand panel */}
-      <div className="hidden lg:flex flex-1 bg-[#1E3A5F] items-center justify-center p-12">
+      <div className="hidden lg:flex flex-1 bg-[#0F2B3C] items-center justify-center p-12">
         <div className="max-w-md text-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-8">
-            <span className="text-2xl font-bold text-white">C</span>
-          </div>
+          <img
+            src="https://psbydesign.com/wp-content/uploads/2021/07/Logo-Transparent-1024x211.png"
+            alt="PSD"
+            className="h-10 w-auto mx-auto mb-8 brightness-200"
+          />
           <h2 className="text-2xl font-semibold text-white mb-4 tracking-tight">
             Your leadership journey, structured.
           </h2>

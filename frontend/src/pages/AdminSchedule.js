@@ -180,7 +180,7 @@ export default function AdminSchedule() {
               onClick={() => handleAction('approved')}
               disabled={processing}
               data-testid="approve-request-btn"
-              className="bg-[#0F766E] hover:bg-[#0D635D]"
+              className="bg-[#0B7A6F] hover:bg-[#096B62]"
             >
               {processing ? <Loader2 size={14} className="animate-spin" /> : 'Approve'}
             </Button>

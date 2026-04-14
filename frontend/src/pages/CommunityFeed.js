@@ -82,7 +82,7 @@ export default function CommunityFeed() {
               data-testid="type-best-practice"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors
                 ${postType === 'best_practice'
-                  ? 'bg-[#1E3A5F] text-white'
+                  ? 'bg-[#0F2B3C] text-white'
                   : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                 }`}
             >
@@ -93,7 +93,7 @@ export default function CommunityFeed() {
               data-testid="type-quote"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors
                 ${postType === 'quote'
-                  ? 'bg-[#0F766E] text-white'
+                  ? 'bg-[#0B7A6F] text-white'
                   : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                 }`}
             >
@@ -112,7 +112,7 @@ export default function CommunityFeed() {
               onClick={handlePost}
               disabled={submitting || !content.trim()}
               data-testid="submit-post-btn"
-              className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+              className="bg-[#0F2B3C] hover:bg-[#0A2233]"
             >
               {submitting ? <Loader2 size={14} className="animate-spin" /> : <><Send size={14} className="mr-2" /> Post</>}
             </Button>
@@ -140,7 +140,7 @@ export default function CommunityFeed() {
               >
                 <div className="flex items-start gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0
-                    ${post.user_role === 'admin' ? 'bg-[#0F766E]' : 'bg-[#1E3A5F]'}`}>
+                    ${post.user_role === 'admin' ? 'bg-[#0B7A6F]' : 'bg-[#0F2B3C]'}`}>
                     {post.user_name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -150,8 +150,8 @@ export default function CommunityFeed() {
                         variant="secondary"
                         className={`text-[10px] ${
                           post.type === 'quote'
-                            ? 'bg-[#0F766E]/10 text-[#0F766E]'
-                            : 'bg-[#1E3A5F]/10 text-[#1E3A5F]'
+                            ? 'bg-[#0B7A6F]/10 text-[#0B7A6F]'
+                            : 'bg-[#0F2B3C]/10 text-[#0F2B3C]'
                         }`}
                       >
                         {post.type === 'quote' ? 'Quote' : 'Best Practice'}

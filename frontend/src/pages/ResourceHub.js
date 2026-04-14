@@ -18,12 +18,12 @@ import {
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const RESOURCE_CONFIG = {
-  resource_guide: { label: 'Resource Guide', description: 'Your complete coaching program guide and workbook', icon: BookOpen, color: '#1E3A5F' },
-  '360_assessment': { label: '360 Leadership Assessment', description: 'Multi-rater feedback on your leadership competencies', icon: Target, color: '#0F766E' },
+  resource_guide: { label: 'Resource Guide', description: 'Your complete coaching program guide and workbook', icon: BookOpen, color: '#0F2B3C' },
+  '360_assessment': { label: '360 Leadership Assessment', description: 'Multi-rater feedback on your leadership competencies', icon: Target, color: '#0B7A6F' },
   '16personalities': { label: '16 Personalities Profile', description: 'Your personality type analysis and insights', icon: Brain, color: '#7C3AED' },
   midway_report: { label: 'Midway Progress Report', description: 'Mid-program assessment and development review', icon: FileBarChart, color: '#D97706' },
-  graduation_report: { label: 'Graduation Report', description: 'Comprehensive final program evaluation', icon: GraduationCap, color: '#1E3A5F' },
-  certificate: { label: 'Certificate of Completion', description: 'Official program completion certificate', icon: Award, color: '#0F766E' },
+  graduation_report: { label: 'Graduation Report', description: 'Comprehensive final program evaluation', icon: GraduationCap, color: '#0F2B3C' },
+  certificate: { label: 'Certificate of Completion', description: 'Official program completion certificate', icon: Award, color: '#0B7A6F' },
 };
 
 export default function ResourceHub() {
@@ -95,7 +95,7 @@ export default function ResourceHub() {
         <p className="text-sm text-slate-500 mt-2 max-w-lg">
           Access all your coaching program documents and assessments.
           {availableCount > 0 && (
-            <span className="text-[#0F766E] font-medium"> {availableCount} of {Object.keys(RESOURCE_CONFIG).length} available.</span>
+            <span className="text-[#0B7A6F] font-medium"> {availableCount} of {Object.keys(RESOURCE_CONFIG).length} available.</span>
           )}
         </p>
       </div>
@@ -152,7 +152,7 @@ export default function ResourceHub() {
                         onClick={() => handleDownload(resource)}
                         disabled={downloading === resource.id}
                         data-testid={`download-${type}`}
-                        className="h-9 text-xs bg-[#1E3A5F] hover:bg-[#152D4A] px-4"
+                        className="h-9 text-xs bg-[#0F2B3C] hover:bg-[#0A2233] px-4"
                       >
                         {downloading === resource.id ? (
                           <Loader2 size={12} className="animate-spin" />

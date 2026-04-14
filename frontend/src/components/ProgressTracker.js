@@ -12,7 +12,7 @@ export default function ProgressTracker({ sessions = [], compact = false }) {
             <div
               key={i}
               className={`w-5 h-[5px] rounded-full transition-colors ${
-                s.status === 'completed' ? 'bg-[#1E3A5F]' : 'bg-slate-200'
+                s.status === 'completed' ? 'bg-[#0F2B3C]' : 'bg-slate-200'
               }`}
             />
           ))}
@@ -36,14 +36,14 @@ export default function ProgressTracker({ sessions = [], compact = false }) {
           <p className="text-sm text-slate-500 mt-1.5">sessions completed</p>
         </div>
         <div className="text-right">
-          <p className="text-4xl sm:text-5xl font-semibold text-[#1E3A5F] tracking-tight leading-none">{percent}<span className="text-xl">%</span></p>
+          <p className="text-4xl sm:text-5xl font-semibold text-[#0F2B3C] tracking-tight leading-none">{percent}<span className="text-xl">%</span></p>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden">
         <div
-          className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#1E3A5F] to-[#2A5080] rounded-full transition-all duration-1000 ease-out"
+          className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#0F2B3C] to-[#2A5080] rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${percent}%` }}
           data-testid="progress-bar"
         />
@@ -64,9 +64,9 @@ export default function ProgressTracker({ sessions = [], compact = false }) {
               <div
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300
                   ${isCompleted
-                    ? 'bg-[#1E3A5F] text-white shadow-sm shadow-[#1E3A5F]/20'
+                    ? 'bg-[#0F2B3C] text-white shadow-sm shadow-[#0F2B3C]/20'
                     : isCurrent
-                      ? 'bg-white border-2 border-[#1E3A5F] text-[#1E3A5F] shadow-sm'
+                      ? 'bg-white border-2 border-[#0F2B3C] text-[#0F2B3C] shadow-sm'
                       : 'bg-slate-50 border border-slate-200 text-slate-400'
                   }
                 `}
@@ -80,7 +80,7 @@ export default function ProgressTracker({ sessions = [], compact = false }) {
                 )}
               </div>
               <span className={`text-[10px] font-medium leading-none ${
-                isCompleted ? 'text-[#1E3A5F]' : isCurrent ? 'text-[#1E3A5F]' : 'text-slate-300'
+                isCompleted ? 'text-[#0F2B3C]' : isCurrent ? 'text-[#0F2B3C]' : 'text-slate-300'
               }`}>
                 {i + 1}
               </span>

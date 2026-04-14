@@ -53,8 +53,8 @@ export default function ChangePasswordPage({ forced = false, onComplete }) {
       <Card className="border border-slate-200 shadow-sm w-full max-w-md" data-testid="change-password-card">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-[#1E3A5F]/10 flex items-center justify-center">
-              {forced ? <ShieldCheck size={20} className="text-[#1E3A5F]" /> : <Lock size={20} className="text-[#1E3A5F]" />}
+            <div className="w-10 h-10 rounded-xl bg-[#0F2B3C]/10 flex items-center justify-center">
+              {forced ? <ShieldCheck size={20} className="text-[#0F2B3C]" /> : <Lock size={20} className="text-[#0F2B3C]" />}
             </div>
             <div>
               <CardTitle className="text-lg">
@@ -134,7 +134,7 @@ export default function ChangePasswordPage({ forced = false, onComplete }) {
                 type="submit"
                 disabled={loading}
                 data-testid="change-password-submit"
-                className="w-full h-10 bg-[#1E3A5F] hover:bg-[#152D4A]"
+                className="w-full h-10 bg-[#0F2B3C] hover:bg-[#0A2233]"
               >
                 {loading ? <Loader2 size={16} className="animate-spin" /> : (forced ? 'Set Password & Continue' : 'Update Password')}
               </Button>

@@ -133,7 +133,7 @@ export default function AdminParticipants() {
         <Button
           onClick={() => setShowCreate(true)}
           data-testid="create-participant-btn"
-          className="bg-[#1E3A5F] hover:bg-[#152D4A] text-white"
+          className="bg-[#0F2B3C] hover:bg-[#0A2233] text-white"
         >
           <UserPlus size={16} className="mr-2" /> Add Participant
         </Button>
@@ -161,7 +161,7 @@ export default function AdminParticipants() {
                 <CardContent className="p-5">
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${isActive ? 'bg-[#1E3A5F]' : 'bg-slate-400'}`}
+                      className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${isActive ? 'bg-[#0F2B3C]' : 'bg-slate-400'}`}
                       onClick={() => isActive && setSelectedParticipant(p)}
                       style={{ cursor: isActive ? 'pointer' : 'default' }}
                     >
@@ -292,7 +292,7 @@ export default function AdminParticipants() {
                 type="submit"
                 disabled={creating}
                 data-testid="create-participant-submit"
-                className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+                className="bg-[#0F2B3C] hover:bg-[#0A2233]"
               >
                 {creating ? <Loader2 size={16} className="animate-spin" /> : 'Create Participant'}
               </Button>
@@ -328,7 +328,7 @@ export default function AdminParticipants() {
               onClick={handleResetPassword}
               disabled={actionLoading || resetPassword.length < 8}
               data-testid="confirm-reset-password"
-              className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+              className="bg-[#0F2B3C] hover:bg-[#0A2233]"
             >
               {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Reset Password'}
             </Button>
@@ -433,7 +433,7 @@ function ParticipantDetail({ participant, onClose }) {
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#1E3A5F] flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-[#0F2B3C] flex items-center justify-center text-white font-semibold">
               {participant.name?.charAt(0)?.toUpperCase()}
             </div>
             <div>
@@ -458,7 +458,7 @@ function ParticipantDetail({ participant, onClose }) {
               {sessions.map(s => (
                 <div key={s.id} className="flex items-center gap-3 p-3 rounded-lg border border-slate-100">
                   {s.status === 'completed' ? (
-                    <Check size={16} className="text-[#0F766E] shrink-0" />
+                    <Check size={16} className="text-[#0B7A6F] shrink-0" />
                   ) : (
                     <Clock size={16} className="text-slate-300 shrink-0" />
                   )}
@@ -480,14 +480,14 @@ function ParticipantDetail({ participant, onClose }) {
                         size="sm"
                         onClick={() => markComplete(s.id, sessionNotes[s.id])}
                         data-testid={`mark-complete-${s.session_number}`}
-                        className="h-8 text-xs bg-[#0F766E] hover:bg-[#0D635D]"
+                        className="h-8 text-xs bg-[#0B7A6F] hover:bg-[#096B62]"
                       >
                         Complete
                       </Button>
                     </div>
                   )}
                   {s.status === 'completed' && (
-                    <Badge className="bg-[#0F766E] hover:bg-[#0F766E] text-[10px]">Done</Badge>
+                    <Badge className="bg-[#0B7A6F] hover:bg-[#0B7A6F] text-[10px]">Done</Badge>
                   )}
                 </div>
               ))}
@@ -509,7 +509,7 @@ function ParticipantDetail({ participant, onClose }) {
                     </SelectContent>
                   </Select>
                   <label className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors
-                    ${uploadType ? 'bg-[#1E3A5F] text-white hover:bg-[#152D4A]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
+                    ${uploadType ? 'bg-[#0F2B3C] text-white hover:bg-[#0A2233]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                     {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
                     Choose File
                     <input
@@ -530,7 +530,7 @@ function ParticipantDetail({ participant, onClose }) {
                 <div className="space-y-2">
                   {resources.map(r => (
                     <div key={r.id} className="flex items-center gap-3 p-3 rounded-lg border border-slate-100">
-                      <FileText size={16} className="text-[#1E3A5F] shrink-0" />
+                      <FileText size={16} className="text-[#0F2B3C] shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-slate-700 truncate">{r.original_filename}</p>
                         <p className="text-xs text-slate-400">

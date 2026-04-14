@@ -138,7 +138,7 @@ export default function AdminResources() {
                     </SelectContent>
                   </Select>
                   <label className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors whitespace-nowrap
-                    ${uploadType ? 'bg-[#1E3A5F] text-white hover:bg-[#152D4A]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
+                    ${uploadType ? 'bg-[#0F2B3C] text-white hover:bg-[#0A2233]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                     {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
                     Upload File
                     <input
@@ -166,7 +166,7 @@ export default function AdminResources() {
                 <Card key={r.id} className="border border-slate-200 shadow-sm">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
-                      <FileText size={18} className="text-[#1E3A5F] shrink-0" />
+                      <FileText size={18} className="text-[#0F2B3C] shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-slate-700 truncate">{r.original_filename}</p>
                         <p className="text-xs text-slate-400">
