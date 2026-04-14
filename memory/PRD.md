@@ -33,6 +33,15 @@ Build a production-ready web + mobile app called "CLARITY Executive Coaching Das
 8. **Community Feed** - Post best practices or motivational quotes, like/react functionality
 9. **Participant Management** - Admin creates accounts, views all participants with progress
 
+### Security Hardening (Complete - April 14, 2026)
+1. **Force Password Change** - All new accounts require password change on first login
+2. **Change Password** - All users can change password at /settings
+3. **Admin Controls** - Deactivate/activate participants, reset passwords, archive accounts
+4. **Data Isolation** - Strict per-participant data isolation enforced on all API endpoints
+5. **File Security** - All file downloads require authentication, no public URLs
+6. **No Exposed Credentials** - No credentials logged or displayed in UI
+7. **Account Deactivation** - Deactivated accounts blocked from login (403)
+
 ### API Endpoints
 - Auth: POST /api/auth/login, /logout, GET /me, POST /refresh
 - Participants: POST/GET /api/participants, GET /api/participants/:id
