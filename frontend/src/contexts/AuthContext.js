@@ -34,8 +34,12 @@ export function AuthProvider({ children }) {
     setUser(false);
   };
 
+  const clearForcePasswordChange = () => {
+    if (user) setUser({ ...user, force_password_change: false });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth, clearForcePasswordChange }}>
       {children}
     </AuthContext.Provider>
   );

@@ -106,7 +106,7 @@ export default function ParticipantDashboard() {
                 <Sparkles size={18} className="text-[#0F766E]" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
                   Where you are
                 </p>
                 <p className="text-lg font-semibold text-slate-900">{phase}</p>
@@ -131,13 +131,13 @@ export default function ParticipantDashboard() {
                 <CalendarClock size={18} className="text-[#1E3A5F]" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-semibold mb-1">
                   Next Session
                 </p>
                 {next_session ? (
                   <>
                     <p className="text-lg font-semibold text-slate-900">
-                      Session {next_session.session_number}
+                      Session {next_session.session_number} of 10
                     </p>
                     <p className="text-sm text-slate-500 mt-1">
                       {next_session.scheduled_date

@@ -106,7 +106,7 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-8 text-xs text-slate-400 text-center">
-            Contact your organization admin for account access
+            Accounts are provisioned by your coaching administrator
           </p>
         </div>
       </div>

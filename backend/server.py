@@ -105,6 +105,8 @@ async def get_current_user(request: Request) -> dict:
         user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
+        if not user.get("is_active", True):
+            raise HTTPException(status_code=403, detail="Account deactivated")
         user["_id"] = str(user["_id"])
         user.pop("password_hash", None)
         return user
@@ -149,6 +151,13 @@ class PostCreate(BaseModel):
     content: str
     type: str  # best_practice or quote
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+class AdminResetPasswordRequest(BaseModel):
+    new_password: str
+
 # App + Router
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -179,6 +188,10 @@ async def login(req: LoginRequest, request: Request, response: Response):
         )
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
+    # Check if account is active
+    if not user.get("is_active", True):
+        raise HTTPException(status_code=403, detail="Account has been deactivated. Contact your administrator.")
+    
     await db.login_attempts.delete_one({"identifier": identifier})
     
     uid = str(user["_id"])
@@ -186,7 +199,13 @@ async def login(req: LoginRequest, request: Request, response: Response):
     refresh = create_refresh_token(uid)
     set_auth_cookies(response, access, refresh)
     
-    return {"id": uid, "email": user["email"], "name": user["name"], "role": user["role"]}
+    return {
+        "id": uid,
+        "email": user["email"],
+        "name": user["name"],
+        "role": user["role"],
+        "force_password_change": user.get("force_password_change", False)
+    }
 
 @api_router.post("/auth/logout")
 async def logout(response: Response):
@@ -197,6 +216,9 @@ async def logout(response: Response):
 @api_router.get("/auth/me")
 async def get_me(request: Request):
     user = await get_current_user(request)
+    # Also fetch force_password_change from DB
+    db_user = await db.users.find_one({"_id": ObjectId(user["_id"])}, {"force_password_change": 1})
+    user["force_password_change"] = db_user.get("force_password_change", False) if db_user else False
     return user
 
 @api_router.post("/auth/refresh")
@@ -221,6 +243,76 @@ async def refresh_token(request: Request, response: Response):
 
 # ============ PARTICIPANT MANAGEMENT (ADMIN) ============
 
+@api_router.post("/auth/change-password")
+async def change_password(req: ChangePasswordRequest, request: Request):
+    user = await get_current_user(request)
+    
+    # Verify current password
+    db_user = await db.users.find_one({"_id": ObjectId(user["_id"])})
+    if not db_user or not verify_password(req.current_password, db_user["password_hash"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    if len(req.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    
+    await db.users.update_one(
+        {"_id": ObjectId(user["_id"])},
+        {"$set": {"password_hash": hash_password(req.new_password), "force_password_change": False}}
+    )
+    return {"message": "Password changed successfully"}
+
+@api_router.post("/participants/{participant_id}/reset-password")
+async def admin_reset_password(participant_id: str, req: AdminResetPasswordRequest, request: Request):
+    await require_admin(request)
+    
+    participant = await db.users.find_one({"_id": ObjectId(participant_id), "role": "participant"})
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    
+    if len(req.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    
+    await db.users.update_one(
+        {"_id": ObjectId(participant_id)},
+        {"$set": {"password_hash": hash_password(req.new_password), "force_password_change": True}}
+    )
+    return {"message": "Password reset successfully"}
+
+@api_router.put("/participants/{participant_id}/deactivate")
+async def deactivate_participant(participant_id: str, request: Request):
+    await require_admin(request)
+    
+    participant = await db.users.find_one({"_id": ObjectId(participant_id), "role": "participant"})
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    
+    await db.users.update_one(
+        {"_id": ObjectId(participant_id)},
+        {"$set": {"is_active": not participant.get("is_active", True)}}
+    )
+    new_status = not participant.get("is_active", True)
+    return {"message": f"Participant {'activated' if new_status else 'deactivated'}", "is_active": new_status}
+
+@api_router.delete("/participants/{participant_id}")
+async def archive_participant(participant_id: str, request: Request):
+    await require_admin(request)
+    
+    participant = await db.users.find_one({"_id": ObjectId(participant_id), "role": "participant"})
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    
+    # Soft-delete: mark as archived and deactivated
+    await db.users.update_one(
+        {"_id": ObjectId(participant_id)},
+        {"$set": {"is_active": False, "archived": True, "archived_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    # Soft-delete associated resources
+    await db.resources.update_many(
+        {"participant_id": participant_id},
+        {"$set": {"is_deleted": True}}
+    )
+    return {"message": "Participant archived"}
+
 @api_router.post("/participants")
 async def create_participant(req: CreateParticipantRequest, request: Request):
     admin = await require_admin(request)
@@ -235,6 +327,8 @@ async def create_participant(req: CreateParticipantRequest, request: Request):
         "name": req.name,
         "password_hash": hash_password(req.password),
         "role": "participant",
+        "is_active": True,
+        "force_password_change": True,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     result = await db.users.insert_one(user_doc)
@@ -260,8 +354,11 @@ async def create_participant(req: CreateParticipantRequest, request: Request):
 
 @api_router.get("/participants")
 async def list_participants(request: Request):
-    admin = await require_admin(request)
-    participants = await db.users.find({"role": "participant"}, {"_id": 1, "email": 1, "name": 1, "role": 1, "created_at": 1}).to_list(1000)
+    await require_admin(request)
+    participants = await db.users.find(
+        {"role": "participant", "archived": {"$ne": True}},
+        {"_id": 1, "email": 1, "name": 1, "role": 1, "created_at": 1, "is_active": 1}
+    ).to_list(1000)
     result = []
     for p in participants:
         p["id"] = str(p["_id"])
@@ -271,6 +368,7 @@ async def list_participants(request: Request):
         total = await db.sessions.count_documents({"participant_id": p["id"]})
         p["sessions_completed"] = completed
         p["sessions_total"] = total
+        p["is_active"] = p.get("is_active", True)
         result.append(p)
     return result
 
@@ -594,15 +692,17 @@ async def seed_admin():
             "password_hash": hashed,
             "name": "Coach Admin",
             "role": "admin",
+            "is_active": True,
+            "force_password_change": True,
             "created_at": datetime.now(timezone.utc).isoformat()
         })
-        logger.info(f"Admin seeded: {admin_email}")
+        logger.info("Admin account initialized")
     elif not verify_password(admin_password, existing["password_hash"]):
         await db.users.update_one(
             {"email": admin_email},
-            {"$set": {"password_hash": hash_password(admin_password)}}
+            {"$set": {"password_hash": hash_password(admin_password), "force_password_change": True}}
         )
-        logger.info("Admin password updated")
+        logger.info("Admin credentials synchronized")
 
 @app.on_event("startup")
 async def startup():
@@ -624,7 +724,7 @@ async def startup():
     except Exception as e:
         logger.error(f"Storage init failed: {e}")
     
-    # Write test credentials
+    # Write test credentials (internal only, not exposed in UI or logs)
     os.makedirs("/app/memory", exist_ok=True)
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@clarity.coach")
     admin_password = os.environ.get("ADMIN_PASSWORD", "ClarityAdmin2026!")

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -8,10 +8,11 @@ import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../components/ui/select';
-import { Textarea } from '../components/ui/textarea';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '../components/ui/dropdown-menu';
 import ProgressTracker from '../components/ProgressTracker';
 import {
-  UserPlus, Loader2, Check, Clock, FileText, Upload, AlertCircle
+  UserPlus, Loader2, Check, Clock, FileText, Upload, AlertCircle,
+  MoreVertical, KeyRound, UserX, UserCheck, Archive, Shield
 } from 'lucide-react';
 import { formatApiError } from '../contexts/AuthContext';
 
@@ -34,6 +35,10 @@ export default function AdminParticipants() {
   const [createForm, setCreateForm] = useState({ name: '', email: '', password: '' });
   const [createError, setCreateError] = useState('');
   const [creating, setCreating] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(null);
+  const [showArchive, setShowArchive] = useState(null);
+  const [resetPassword, setResetPassword] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => { fetchParticipants(); }, []);
 
@@ -51,6 +56,10 @@ export default function AdminParticipants() {
   const handleCreate = async (e) => {
     e.preventDefault();
     setCreateError('');
+    if (createForm.password.length < 8) {
+      setCreateError('Password must be at least 8 characters');
+      return;
+    }
     setCreating(true);
     try {
       await axios.post(`${API}/participants`, createForm, { withCredentials: true });
@@ -61,6 +70,48 @@ export default function AdminParticipants() {
       setCreateError(formatApiError(err.response?.data?.detail));
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleToggleActive = async (participant) => {
+    setActionLoading(true);
+    try {
+      await axios.put(`${API}/participants/${participant.id}/deactivate`, {}, { withCredentials: true });
+      fetchParticipants();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!showResetPassword || resetPassword.length < 8) return;
+    setActionLoading(true);
+    try {
+      await axios.post(`${API}/participants/${showResetPassword.id}/reset-password`, {
+        new_password: resetPassword
+      }, { withCredentials: true });
+      setShowResetPassword(null);
+      setResetPassword('');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleArchive = async () => {
+    if (!showArchive) return;
+    setActionLoading(true);
+    try {
+      await axios.delete(`${API}/participants/${showArchive.id}`, { withCredentials: true });
+      setShowArchive(null);
+      fetchParticipants();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -94,43 +145,98 @@ export default function AdminParticipants() {
         <Card className="border border-slate-200 shadow-sm">
           <CardContent className="py-12 text-center">
             <UserPlus size={32} className="text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 mb-1">No participants yet</p>
-            <p className="text-sm text-slate-400">Create your first participant to get started</p>
+            <p className="text-slate-500 mb-1">No participants enrolled</p>
+            <p className="text-sm text-slate-400">Add your first participant to begin the coaching program</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
-          {participants.map(p => (
-            <Card
-              key={p.id}
-              className="border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-[1px] transition-all cursor-pointer"
-              onClick={() => setSelectedParticipant(p)}
-              data-testid={`participant-card-${p.id}`}
-            >
-              <CardContent className="p-5">
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-full bg-[#1E3A5F] flex items-center justify-center text-white font-semibold shrink-0">
-                    {p.name?.charAt(0)?.toUpperCase()}
+        <div className="grid gap-3">
+          {participants.map(p => {
+            const isActive = p.is_active !== false;
+            return (
+              <Card
+                key={p.id}
+                className={`border shadow-sm transition-all ${isActive ? 'border-slate-200 hover:shadow-md hover:-translate-y-[1px]' : 'border-slate-100 bg-slate-50/50 opacity-75'}`}
+                data-testid={`participant-card-${p.id}`}
+              >
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${isActive ? 'bg-[#1E3A5F]' : 'bg-slate-400'}`}
+                      onClick={() => isActive && setSelectedParticipant(p)}
+                      style={{ cursor: isActive ? 'pointer' : 'default' }}
+                    >
+                      {p.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                    <div
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={() => isActive && setSelectedParticipant(p)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-slate-800">{p.name}</p>
+                        {!isActive && (
+                          <Badge variant="secondary" className="text-[10px] bg-slate-200 text-slate-500">Inactive</Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-400">{p.email}</p>
+                    </div>
+                    <div className="hidden sm:block">
+                      <ProgressTracker
+                        sessions={Array.from({ length: p.sessions_total || 10 }, (_, i) => ({
+                          status: i < (p.sessions_completed || 0) ? 'completed' : 'upcoming'
+                        }))}
+                        compact
+                      />
+                    </div>
+                    <Badge variant="secondary" className="text-xs shrink-0">
+                      {p.sessions_completed || 0}/{p.sessions_total || 10}
+                    </Badge>
+
+                    {/* Admin actions dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" data-testid={`participant-actions-${p.id}`}>
+                          <MoreVertical size={16} className="text-slate-400" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => setSelectedParticipant(p)}
+                          data-testid={`view-details-${p.id}`}
+                        >
+                          <Shield size={14} className="mr-2" /> View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => { setShowResetPassword(p); setResetPassword(''); }}
+                          data-testid={`reset-password-${p.id}`}
+                        >
+                          <KeyRound size={14} className="mr-2" /> Reset Password
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleToggleActive(p)}
+                          data-testid={`toggle-active-${p.id}`}
+                        >
+                          {isActive ? (
+                            <><UserX size={14} className="mr-2" /> Deactivate</>
+                          ) : (
+                            <><UserCheck size={14} className="mr-2" /> Activate</>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setShowArchive(p)}
+                          className="text-red-600 focus:text-red-600"
+                          data-testid={`archive-${p.id}`}
+                        >
+                          <Archive size={14} className="mr-2" /> Archive
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-800">{p.name}</p>
-                    <p className="text-xs text-slate-400">{p.email}</p>
-                  </div>
-                  <div className="hidden sm:block">
-                    <ProgressTracker
-                      sessions={Array.from({ length: p.sessions_total || 10 }, (_, i) => ({
-                        status: i < (p.sessions_completed || 0) ? 'completed' : 'upcoming'
-                      }))}
-                      compact
-                    />
-                  </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {p.sessions_completed || 0}/{p.sessions_total || 10}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
 
@@ -139,7 +245,7 @@ export default function AdminParticipants() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add New Participant</DialogTitle>
-            <DialogDescription>Create an account for a new coaching participant.</DialogDescription>
+            <DialogDescription>Create an account for a new coaching participant. They will be required to change their password on first login.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleCreate} className="space-y-4">
             {createError && (
@@ -175,10 +281,11 @@ export default function AdminParticipants() {
                 type="password"
                 value={createForm.password}
                 onChange={e => setCreateForm({ ...createForm, password: e.target.value })}
-                placeholder="Set initial password"
+                placeholder="Min. 8 characters"
                 required
                 data-testid="create-password-input"
               />
+              <p className="text-[10px] text-slate-400">Participant will be prompted to change this on first login.</p>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setShowCreate(false)}>Cancel</Button>
@@ -188,10 +295,68 @@ export default function AdminParticipants() {
                 data-testid="create-participant-submit"
                 className="bg-[#1E3A5F] hover:bg-[#152D4A]"
               >
-                {creating ? <Loader2 size={16} className="animate-spin" /> : 'Create'}
+                {creating ? <Loader2 size={16} className="animate-spin" /> : 'Create Participant'}
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={!!showResetPassword} onOpenChange={() => setShowResetPassword(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+            <DialogDescription>
+              Set a new temporary password for {showResetPassword?.name}. They will be required to change it on next login.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>New Temporary Password</Label>
+              <Input
+                type="password"
+                value={resetPassword}
+                onChange={e => setResetPassword(e.target.value)}
+                placeholder="Min. 8 characters"
+                data-testid="reset-password-input"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowResetPassword(null)}>Cancel</Button>
+            <Button
+              onClick={handleResetPassword}
+              disabled={actionLoading || resetPassword.length < 8}
+              data-testid="confirm-reset-password"
+              className="bg-[#1E3A5F] hover:bg-[#152D4A]"
+            >
+              {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Reset Password'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Archive Confirmation Dialog */}
+      <Dialog open={!!showArchive} onOpenChange={() => setShowArchive(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Archive Participant</DialogTitle>
+            <DialogDescription>
+              This will deactivate {showArchive?.name}'s account and archive their data. This action cannot be easily undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowArchive(null)}>Cancel</Button>
+            <Button
+              onClick={handleArchive}
+              disabled={actionLoading}
+              data-testid="confirm-archive"
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {actionLoading ? <Loader2 size={14} className="animate-spin" /> : 'Archive'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -302,6 +467,7 @@ function ParticipantDetail({ participant, onClose }) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-700">Session {s.session_number}</p>
                     {s.notes && <p className="text-xs text-slate-400 mt-0.5">{s.notes}</p>}
+                    {s.completed_at && <p className="text-[10px] text-slate-400 mt-0.5">Completed: {new Date(s.completed_at).toLocaleDateString()}</p>}
                   </div>
                   {s.status !== 'completed' && (
                     <div className="flex items-center gap-2">

@@ -11,7 +11,9 @@ import AdminSchedule from "./pages/AdminSchedule";
 import ResourceHub from "./pages/ResourceHub";
 import SchedulePage from "./pages/SchedulePage";
 import CommunityFeed from "./pages/CommunityFeed";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, loading } = useAuth();
@@ -28,8 +30,28 @@ function ProtectedRoute({ children, requireAdmin = false }) {
   }
 
   if (!user) return <Navigate to="/login" replace />;
+  if (user.force_password_change) return <Navigate to="/change-password" replace />;
   if (requireAdmin && user.role !== "admin") return <Navigate to="/" replace />;
   return children;
+}
+
+function ForcePasswordRoute() {
+  const { user, loading, clearForcePasswordChange } = useAuth();
+  const navigate = useNavigate();
+
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!user.force_password_change) return <Navigate to="/" replace />;
+
+  return (
+    <ChangePasswordPage
+      forced={true}
+      onComplete={() => {
+        clearForcePasswordChange();
+        navigate("/");
+      }}
+    />
+  );
 }
 
 function DashboardLayout({ children }) {
@@ -63,6 +85,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route path="/change-password" element={<ForcePasswordRoute />} />
 
       {/* Dashboard Home */}
       <Route
@@ -135,6 +158,18 @@ function AppRoutes() {
           <ProtectedRoute requireAdmin>
             <DashboardLayout>
               <AdminSchedule />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Settings */}
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ChangePasswordPage forced={false} />
             </DashboardLayout>
           </ProtectedRoute>
         }

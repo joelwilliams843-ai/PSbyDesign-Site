@@ -19,6 +19,7 @@ const participantNav = [
   { label: 'Resources', path: '/resources', icon: FolderOpen },
   { label: 'Schedule', path: '/schedule', icon: CalendarClock },
   { label: 'Community', path: '/community', icon: MessageSquare },
+  { label: 'Settings', path: '/settings', icon: Settings },
 ];
 
 const adminNav = [
@@ -27,6 +28,7 @@ const adminNav = [
   { label: 'Resources', path: '/admin/resources', icon: FolderOpen },
   { label: 'Schedule', path: '/admin/schedule', icon: CalendarClock },
   { label: 'Community', path: '/community', icon: MessageSquare },
+  { label: 'Settings', path: '/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
