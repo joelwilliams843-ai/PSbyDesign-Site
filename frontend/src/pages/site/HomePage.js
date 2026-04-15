@@ -7,10 +7,10 @@ import {
 const HERO_IMG = 'https://images.unsplash.com/photo-1758518727707-b023e285b709?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwyfHxleGVjdXRpdmUlMjBjb25zdWx0aW5nJTIwcHJvZmVzc2lvbmFsJTIwdGVhbSUyMG1lZXRpbmclMjBtb2Rlcm4lMjBvZmZpY2V8ZW58MHx8fHwxNzc2MjA2MjE0fDA&ixlib=rb-4.1.0&q=85';
 
 const SERVICES = [
-  { icon: Briefcase, title: 'Consulting Services', desc: 'In-depth gap analysis to pinpoint and resolve barriers to an extraordinary customer experience.' },
-  { icon: Users, title: 'Executive Coaching', desc: 'One-on-one leadership development focused on six key competencies for organizational impact.' },
-  { icon: BookOpen, title: 'Workshops & Webinars', desc: 'Engaging sessions designed to create awareness, build skills, and foster sustainable change.' },
-  { icon: GraduationCap, title: 'Learning Resources', desc: 'Customizable guides, checklists, and micro-learning tools that drive real-world results.' },
+  { icon: Briefcase, title: 'Consulting Services', desc: 'In-depth gap analysis to pinpoint and resolve barriers to an extraordinary customer experience.', img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/hcue6ux6_IMG_2482.jpeg', alt: 'Consulting team leading a strategic gap analysis session' },
+  { icon: Users, title: 'Executive Coaching', desc: 'One-on-one leadership development focused on six key competencies for organizational impact.', img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/4vds13ju_IMG_2483.jpeg', alt: 'Executive professional engaged in leadership development' },
+  { icon: BookOpen, title: 'Workshops & Webinars', desc: 'Engaging sessions designed to create awareness, build skills, and foster sustainable change.', img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/am22xci2_IMG_2485.jpeg', alt: 'Interactive workshop session with diverse professional team' },
+  { icon: GraduationCap, title: 'Learning Resources', desc: 'Customizable guides, checklists, and micro-learning tools that drive real-world results.', img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/brv3ng7k_IMG_2484.jpeg', alt: 'Professional developing customized learning materials' },
 ];
 
 const PRINCIPLES = [
@@ -109,20 +109,34 @@ export default function HomePage() {
               Comprehensive solutions for organizational excellence
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 gap-6">
             {SERVICES.map((s, i) => {
               const Icon = s.icon;
               return (
                 <div
                   key={s.title}
-                  className="group p-6 rounded-xl border border-slate-100 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  className="group relative rounded-xl overflow-hidden border border-slate-100 bg-white hover:shadow-xl transition-all duration-300"
                   data-testid={`service-card-${i}`}
                 >
-                  <div className="w-11 h-11 rounded-xl bg-[#0B7A6F]/[0.08] flex items-center justify-center mb-5 group-hover:bg-[#0B7A6F]/[0.12] transition-colors">
-                    <Icon size={20} className="text-[#0B7A6F]" strokeWidth={1.5} />
+                  {/* Image */}
+                  <div className="aspect-[16/9] overflow-hidden">
+                    <img
+                      src={s.img}
+                      alt={s.alt}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                    />
                   </div>
-                  <h3 className="text-sm font-semibold text-[#0F2B3C] mb-2">{s.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+                  {/* Content */}
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-lg bg-[#0B7A6F]/[0.08] flex items-center justify-center shrink-0 group-hover:bg-[#0B7A6F]/[0.12] transition-colors">
+                        <Icon size={17} className="text-[#0B7A6F]" strokeWidth={1.5} />
+                      </div>
+                      <h3 className="text-base font-semibold text-[#0F2B3C]">{s.title}</h3>
+                    </div>
+                    <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+                  </div>
                 </div>
               );
             })}

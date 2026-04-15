@@ -8,6 +8,8 @@ const SERVICES = [
     subtitle: 'Gap Analysis & Strategy',
     desc: 'We offer an in-depth Six Principles Gap Analysis designed to help you assess and pinpoint specific issues that are inhibiting your team from raising the bar in all aspects of the customer experience.',
     features: ['Six Principles Gap Analysis', 'Custom strategy development', 'Implementation roadmap', 'Ongoing advisory support'],
+    img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/hcue6ux6_IMG_2482.jpeg',
+    alt: 'Consulting team leading a strategic gap analysis session in a modern conference room',
   },
   {
     icon: Users,
@@ -15,6 +17,8 @@ const SERVICES = [
     subtitle: 'Leadership Development',
     desc: 'Professional development for leaders through personal, one-on-one coaching that focuses on increasing business acumen and effectiveness in six key leadership competencies.',
     features: ['1:1 leadership coaching', 'Six competency framework', '360 leadership assessments', 'Structured 10-session programs'],
+    img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/4vds13ju_IMG_2483.jpeg',
+    alt: 'Executive professional engaged in focused leadership development',
   },
   {
     icon: BookOpen,
@@ -22,6 +26,8 @@ const SERVICES = [
     subtitle: 'Team Development',
     desc: 'A comprehensive library of informative, engaging workshops, webinars, and keynote presentations designed to create awareness and foster sustainable change across your organization.',
     features: ['Custom workshop design', 'Keynote presentations', 'Virtual & in-person delivery', 'Train-the-trainer programs'],
+    img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/am22xci2_IMG_2485.jpeg',
+    alt: 'Interactive workshop session with a diverse team of professionals',
   },
   {
     icon: GraduationCap,
@@ -29,6 +35,8 @@ const SERVICES = [
     subtitle: 'Tools & Materials',
     desc: 'An array of highly effective resource guides, cheat sheets, accountability checklists, and micro-learning videos that can be customized to meet your unique organizational needs.',
     features: ['Resource guides', 'Accountability checklists', 'Micro-learning videos', 'Customizable content'],
+    img: 'https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/brv3ng7k_IMG_2484.jpeg',
+    alt: 'Professional developing customized learning and training materials',
   },
 ];
 
@@ -78,8 +86,13 @@ export default function ServicesPage() {
                     ))}
                   </ul>
                 </div>
-                <div className={`${reversed ? 'lg:order-1' : ''} aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#0B7A6F]/5 to-[#0F2B3C]/5 flex items-center justify-center`}>
-                  <Icon size={64} className="text-[#0B7A6F]/20" strokeWidth={0.5} />
+                <div className={`${reversed ? 'lg:order-1' : ''} overflow-hidden rounded-2xl shadow-md`}>
+                  <img
+                    src={s.img}
+                    alt={s.alt}
+                    loading="lazy"
+                    className="w-full aspect-[4/3] object-cover hover:scale-[1.02] transition-transform duration-500 ease-out"
+                  />
                 </div>
               </div>
             );
