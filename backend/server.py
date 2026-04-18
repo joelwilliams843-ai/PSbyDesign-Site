@@ -241,9 +241,10 @@ async def login(req: LoginRequest, request: Request, response: Response):
                 
                 uid = str(mongo_user["_id"])
                 # Store supabase_uid
+                # Store supabase_uid (don't touch force_password_change - only cleared on actual password change)
                 await db.users.update_one(
                     {"email": email},
-                    {"$set": {"supabase_uid": sb_resp.user.id, "force_password_change": False}}
+                    {"$set": {"supabase_uid": sb_resp.user.id}}
                 )
                 
                 return {
@@ -251,7 +252,7 @@ async def login(req: LoginRequest, request: Request, response: Response):
                     "email": mongo_user["email"],
                     "name": mongo_user["name"],
                     "role": mongo_user["role"],
-                    "force_password_change": False,
+                    "force_password_change": mongo_user.get("force_password_change", False),
                     "access_token": sb_resp.session.access_token,
                     "refresh_token": sb_resp.session.refresh_token,
                     "auth_provider": "supabase"
@@ -462,7 +463,7 @@ async def refresh_token(request: Request, response: Response):
 async def change_password(req: ChangePasswordRequest, request: Request):
     user = await get_current_user(request)
     
-    # Verify current password
+    # Verify current password against MongoDB hash
     db_user = await db.users.find_one({"_id": ObjectId(user["_id"])})
     if not db_user or not verify_password(req.current_password, db_user["password_hash"]):
         raise HTTPException(status_code=400, detail="Current password is incorrect")
@@ -470,10 +471,24 @@ async def change_password(req: ChangePasswordRequest, request: Request):
     if len(req.new_password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
     
+    # Update MongoDB password hash
     await db.users.update_one(
         {"_id": ObjectId(user["_id"])},
         {"$set": {"password_hash": hash_password(req.new_password), "force_password_change": False}}
     )
+    
+    # Also update Supabase Auth if user has a Supabase account
+    if db_user.get("supabase_uid"):
+        sb_admin = get_supabase_admin()
+        if sb_admin:
+            try:
+                sb_admin.auth.admin.update_user_by_id(
+                    db_user["supabase_uid"],
+                    {"password": req.new_password}
+                )
+            except Exception as e:
+                logger.warning(f"Supabase password update failed (non-critical): {e}")
+    
     return {"message": "Password changed successfully"}
 
 @api_router.post("/participants/{participant_id}/reset-password")
@@ -491,7 +506,20 @@ async def admin_reset_password(participant_id: str, req: AdminResetPasswordReque
         {"_id": ObjectId(participant_id)},
         {"$set": {"password_hash": hash_password(req.new_password), "force_password_change": True}}
     )
-    return {"message": "Password reset successfully"}
+    
+    # Also update Supabase if linked
+    if participant.get("supabase_uid"):
+        sb_admin = get_supabase_admin()
+        if sb_admin:
+            try:
+                sb_admin.auth.admin.update_user_by_id(
+                    participant["supabase_uid"],
+                    {"password": req.new_password}
+                )
+            except Exception as e:
+                logger.warning(f"Supabase password reset failed (non-critical): {e}")
+    
+    return {"message": "Password reset successfully. User will be prompted to change it on next login."}
 
 @api_router.put("/participants/{participant_id}/deactivate")
 async def deactivate_participant(participant_id: str, request: Request):
