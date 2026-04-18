@@ -41,10 +41,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-20 md:py-28 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="max-w-xl">
-              <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">
                 Performance Solutions by Design
               </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-semibold leading-[1.1] tracking-tight text-[#0F2B3C]">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight text-[#0F2B3C]">
                 Raising the bar from average to{' '}
                 <span className="text-[#0B7A6F]">extraordinary</span>
               </h1>
@@ -74,7 +74,7 @@ export default function HomePage() {
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-xl p-4 shadow-lg border border-slate-100 hidden md:block">
                 <p className="text-2xl font-semibold text-[#0F2B3C]">20+</p>
-                <p className="text-[11px] text-slate-400 uppercase tracking-wider">Years of Excellence</p>
+                <p className="text-xs text-slate-400 uppercase tracking-wider">Years of Excellence</p>
               </div>
             </div>
           </div>
@@ -104,8 +104,8 @@ export default function HomePage() {
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Solutions</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Solutions</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C]">
               Comprehensive solutions for organizational excellence
             </h2>
           </div>
@@ -154,8 +154,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Methodology</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Methodology</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
                 The Six Principles of Service Excellence
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed mb-8">
@@ -187,8 +187,8 @@ export default function HomePage() {
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Cross-Industry Expertise</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Cross-Industry Expertise</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C]">
               We serve organizations of every size and sector
             </h2>
           </div>
@@ -212,10 +212,10 @@ export default function HomePage() {
       <section className="bg-[#0F2B3C] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0EB5A5] font-semibold mb-3">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0EB5A5] font-semibold mb-3">
               Introducing
             </p>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-2">
+            <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white mb-2">
               Clarity
             </h2>
             <p className="text-sm text-[#0EB5A5] font-medium mb-6">
@@ -246,7 +246,7 @@ export default function HomePage() {
       {/* CTA */}
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-4">
             Ready to raise the bar?
           </h2>
           <p className="text-base text-slate-500 max-w-lg mx-auto mb-8">

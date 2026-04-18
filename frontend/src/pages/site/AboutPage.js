@@ -8,8 +8,8 @@ export default function AboutPage() {
       <section className="py-20 md:py-28 bg-[#F8FAFB]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-3xl">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">About Us</p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">About Us</p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
               Raising the bar since 2003
             </h1>
             <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">
@@ -24,8 +24,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Founder</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Founder</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
                 Theo Gilbert-Jamison
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed mb-4">
@@ -55,8 +55,8 @@ export default function AboutPage() {
       <section className="bg-[#F8FAFB] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Approach</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Our Approach</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C]">
               What drives us
             </h2>
           </div>
@@ -81,8 +81,8 @@ export default function AboutPage() {
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Client Perspectives</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Client Perspectives</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C]">
               Trusted by leaders across industries
             </h2>
           </div>
@@ -107,7 +107,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="bg-[#0F2B3C] py-20">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
             When it comes to raising the bar, you can count on us.
           </h2>
           <Link

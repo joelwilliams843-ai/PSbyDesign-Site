@@ -47,8 +47,8 @@ export default function ServicesPage() {
       <section className="py-20 md:py-28 bg-[#F8FAFB]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-3xl">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">Our Services</p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">Our Services</p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
               Customized solutions for extraordinary results
             </h1>
             <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">
@@ -75,7 +75,7 @@ export default function ServicesPage() {
                     <Icon size={24} className="text-[#0B7A6F]" strokeWidth={1.5} />
                   </div>
                   <p className="text-xs text-[#0B7A6F] font-semibold uppercase tracking-wider mb-1">{s.subtitle}</p>
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-4">{s.title}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-4">{s.title}</h2>
                   <p className="text-sm text-slate-500 leading-relaxed mb-6">{s.desc}</p>
                   <ul className="space-y-2.5">
                     {s.features.map(f => (
@@ -103,7 +103,7 @@ export default function ServicesPage() {
       {/* CTA */}
       <section className="bg-[#0F2B3C] py-20">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
             Let's design the right solution for your organization
           </h2>
           <p className="text-base text-slate-400 mb-8 max-w-lg mx-auto">

@@ -29,8 +29,8 @@ export default function ContactPage() {
       <section className="py-20 md:py-28 bg-[#F8FAFB]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-3xl">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">Get in Touch</p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">Get in Touch</p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
               Let's start a conversation
             </h1>
             <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">

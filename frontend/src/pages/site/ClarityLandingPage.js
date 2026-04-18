@@ -37,7 +37,7 @@ export default function ClarityLandingPage() {
                 className="h-4 w-auto brightness-200"
               />
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1]">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-white leading-[1.1]">
               Clarity
             </h1>
             <p className="text-base sm:text-lg text-[#0EB5A5] font-medium mt-3 mb-6">
@@ -71,8 +71,8 @@ export default function ClarityLandingPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">What is Clarity</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">What is Clarity</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
                 Your coaching journey, structured and visible
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed mb-4">
@@ -113,8 +113,8 @@ export default function ClarityLandingPage() {
       {/* Who It's For */}
       <section className="bg-[#F8FAFB] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center">
-          <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Who It's For</p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-12">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Who It's For</p>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-12">
             Built for organizations that invest in their leaders
           </h2>
           <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
@@ -136,8 +136,8 @@ export default function ClarityLandingPage() {
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[11px] uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Platform Features</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C]">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">Platform Features</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C]">
               Everything you need in one place
             </h2>
           </div>
@@ -158,8 +158,8 @@ export default function ClarityLandingPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.25em] text-[#0EB5A5] font-semibold mb-3">Outcomes</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-8">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0EB5A5] font-semibold mb-3">Outcomes</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-8">
                 Measurable impact on leadership development
               </h2>
               <ul className="space-y-4">
@@ -186,7 +186,7 @@ export default function ClarityLandingPage() {
       {/* CTA */}
       <section className="py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0F2B3C] mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-4">
             Ready to bring Clarity to your coaching program?
           </h2>
           <p className="text-base text-slate-500 max-w-lg mx-auto mb-8">
