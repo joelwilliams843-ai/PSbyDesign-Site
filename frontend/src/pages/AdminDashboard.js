@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import ProgressTracker from '../components/ProgressTracker';
+import UserAvatar from '../components/UserAvatar';
 import {
   Users,
   CalendarClock,
@@ -122,9 +123,7 @@ export default function AdminDashboard() {
             <div className="space-y-3">
               {participants.slice(0, 6).map(p => (
                 <div key={p.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                  <div className="w-9 h-9 rounded-full bg-[#0F2B3C] flex items-center justify-center text-white text-sm font-semibold shrink-0">
-                    {p.name?.charAt(0)?.toUpperCase() || '?'}
-                  </div>
+                  <UserAvatar user={p} size="md" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-800 truncate">{p.name}</p>
                     <p className="text-xs text-slate-400 truncate">{p.email}</p>

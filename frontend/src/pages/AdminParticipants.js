@@ -9,6 +9,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../components/ui/select';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '../components/ui/dropdown-menu';
 import ProgressTracker from '../components/ProgressTracker';
+import UserAvatar from '../components/UserAvatar';
+import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import {
   UserPlus, Loader2, Check, Clock, FileText, Upload, AlertCircle,
   MoreVertical, KeyRound, UserX, UserCheck, Archive, Shield
@@ -161,11 +163,11 @@ export default function AdminParticipants() {
                 <CardContent className="p-5">
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${isActive ? 'bg-[#0F2B3C]' : 'bg-slate-400'}`}
+                      className={`shrink-0 ${isActive ? '' : 'opacity-50'}`}
                       onClick={() => isActive && setSelectedParticipant(p)}
                       style={{ cursor: isActive ? 'pointer' : 'default' }}
                     >
-                      {p.name?.charAt(0)?.toUpperCase()}
+                      <UserAvatar user={p} size="lg" />
                     </div>
                     <div
                       className="flex-1 min-w-0 cursor-pointer"
@@ -433,9 +435,7 @@ function ParticipantDetail({ participant, onClose }) {
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#0F2B3C] flex items-center justify-center text-white font-semibold">
-              {participant.name?.charAt(0)?.toUpperCase()}
-            </div>
+            <UserAvatar user={participant} size="md" />
             <div>
               <span className="block">{participant.name}</span>
               <span className="text-xs text-slate-400 font-normal">{participant.email}</span>
@@ -452,7 +452,16 @@ function ParticipantDetail({ participant, onClose }) {
             <TabsList className="w-full">
               <TabsTrigger value="sessions" className="flex-1" data-testid="tab-sessions">Sessions</TabsTrigger>
               <TabsTrigger value="resources" className="flex-1" data-testid="tab-resources">Resources</TabsTrigger>
+              <TabsTrigger value="profile" className="flex-1" data-testid="tab-profile">Profile</TabsTrigger>
             </TabsList>
+
+            {/* Profile Tab */}
+            <TabsContent value="profile" className="mt-4">
+              <div className="space-y-4">
+                <p className="text-sm font-medium text-slate-700">Profile Photo</p>
+                <ProfilePhotoUpload user={participant} targetUserId={participant.id} onUploaded={fetchData} />
+              </div>
+            </TabsContent>
 
             <TabsContent value="sessions" className="mt-4 space-y-3">
               {sessions.map(s => (

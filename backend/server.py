@@ -355,10 +355,81 @@ async def logout(response: Response):
 @api_router.get("/auth/me")
 async def get_me(request: Request):
     user = await get_current_user(request)
-    # Also fetch force_password_change from DB
-    db_user = await db.users.find_one({"_id": ObjectId(user["_id"])}, {"force_password_change": 1})
+    db_user = await db.users.find_one({"_id": ObjectId(user["_id"])}, {"force_password_change": 1, "profile_photo_url": 1})
     user["force_password_change"] = db_user.get("force_password_change", False) if db_user else False
+    user["profile_photo_url"] = db_user.get("profile_photo_url", "") if db_user else ""
     return user
+
+# ============ PROFILE PHOTO ============
+
+ALLOWED_PHOTO_TYPES = {"image/jpeg", "image/png", "image/webp"}
+MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5MB
+
+@api_router.post("/profile/photo")
+async def upload_profile_photo(request: Request, file: UploadFile = File(...)):
+    """Upload profile photo for current user."""
+    user = await get_current_user(request)
+    uid = user["_id"]
+
+    if file.content_type not in ALLOWED_PHOTO_TYPES:
+        raise HTTPException(status_code=400, detail="Only JPG, PNG, and WEBP images are allowed")
+
+    data = await file.read()
+    if len(data) > MAX_PHOTO_SIZE:
+        raise HTTPException(status_code=400, detail="Image must be under 5MB")
+
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    storage_path = f"{APP_NAME}/profile-photos/{uid}.{ext}"
+
+    result = put_object(storage_path, data, file.content_type or "image/jpeg")
+
+    # Store path in user record
+    await db.users.update_one(
+        {"_id": ObjectId(uid)},
+        {"$set": {"profile_photo_path": result["path"], "profile_photo_url": f"/api/profile/photo/{uid}"}}
+    )
+
+    return {"message": "Profile photo uploaded", "url": f"/api/profile/photo/{uid}"}
+
+@api_router.post("/profile/photo/{user_id}")
+async def admin_upload_profile_photo(user_id: str, request: Request, file: UploadFile = File(...)):
+    """Admin uploads a profile photo for a participant."""
+    await require_admin(request)
+
+    target = await db.users.find_one({"_id": ObjectId(user_id)})
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if file.content_type not in ALLOWED_PHOTO_TYPES:
+        raise HTTPException(status_code=400, detail="Only JPG, PNG, and WEBP images are allowed")
+
+    data = await file.read()
+    if len(data) > MAX_PHOTO_SIZE:
+        raise HTTPException(status_code=400, detail="Image must be under 5MB")
+
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    storage_path = f"{APP_NAME}/profile-photos/{user_id}.{ext}"
+
+    result = put_object(storage_path, data, file.content_type or "image/jpeg")
+
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"profile_photo_path": result["path"], "profile_photo_url": f"/api/profile/photo/{user_id}"}}
+    )
+
+    return {"message": "Profile photo uploaded", "url": f"/api/profile/photo/{user_id}"}
+
+@api_router.get("/profile/photo/{user_id}")
+async def get_profile_photo(user_id: str, request: Request):
+    """Get a user's profile photo. Requires authentication."""
+    await get_current_user(request)  # Must be authenticated
+
+    target = await db.users.find_one({"_id": ObjectId(user_id)}, {"profile_photo_path": 1})
+    if not target or not target.get("profile_photo_path"):
+        raise HTTPException(status_code=404, detail="No profile photo")
+
+    data, ct = get_object(target["profile_photo_path"])
+    return Response(content=data, media_type=ct)
 
 @api_router.post("/auth/refresh")
 async def refresh_token(request: Request, response: Response):
@@ -501,7 +572,7 @@ async def list_participants(request: Request):
     await require_admin(request)
     participants = await db.users.find(
         {"role": "participant", "archived": {"$ne": True}},
-        {"_id": 1, "email": 1, "name": 1, "role": 1, "created_at": 1, "is_active": 1}
+        {"_id": 1, "email": 1, "name": 1, "role": 1, "created_at": 1, "is_active": 1, "profile_photo_url": 1}
     ).to_list(1000)
     result = []
     for p in participants:
@@ -725,6 +796,7 @@ async def create_post(req: PostCreate, request: Request):
         "user_id": user["_id"],
         "user_name": user["name"],
         "user_role": user["role"],
+        "user_photo": user.get("profile_photo_url", ""),
         "content": req.content,
         "type": req.type,
         "likes": [],

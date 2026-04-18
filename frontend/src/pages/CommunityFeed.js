@@ -5,6 +5,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
+import UserAvatar from '../components/UserAvatar';
 import {
   Lightbulb, Quote, Heart, Send, Loader2, MessageSquare
 } from 'lucide-react';
@@ -139,10 +140,10 @@ export default function CommunityFeed() {
                 data-testid={`feed-post-${post.id}`}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0
-                    ${post.user_role === 'admin' ? 'bg-[#0B7A6F]' : 'bg-[#0F2B3C]'}`}>
-                    {post.user_name?.charAt(0)?.toUpperCase() || '?'}
-                  </div>
+                  <UserAvatar
+                    user={{ name: post.user_name, role: post.user_role, profile_photo_url: post.user_photo }}
+                    size="sm"
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-semibold text-slate-800">{post.user_name}</span>

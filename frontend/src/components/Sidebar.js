@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import UserAvatar from './UserAvatar';
 import {
   LayoutDashboard,
   FolderOpen,
@@ -112,9 +113,7 @@ export default function Sidebar() {
       {/* User section */}
       <div className="p-4 border-t border-slate-100">
         <div className="flex items-center gap-3 mb-3">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white ${isAdmin ? 'bg-[#0B7A6F]' : 'bg-[#0F2B3C]'}`}>
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-          </div>
+          <UserAvatar user={user} size="sm" />
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-800 truncate">{user?.name}</p>

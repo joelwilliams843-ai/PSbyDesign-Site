@@ -6,11 +6,12 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { AlertCircle, Check, Loader2, Lock, ShieldCheck } from 'lucide-react';
+import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function ChangePasswordPage({ forced = false, onComplete }) {
-  const { user, logout } = useAuth();
+  const { user, checkAuth } = useAuth();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -49,7 +50,20 @@ export default function ChangePasswordPage({ forced = false, onComplete }) {
   };
 
   return (
-    <div className={`${forced ? 'min-h-screen flex items-center justify-center bg-[#F8FAFC] p-6' : 'p-6 md:p-8 max-w-lg mx-auto'}`}>
+    <div className={`${forced ? 'min-h-screen flex items-center justify-center bg-[#F8FAFC] p-6' : 'p-6 md:p-8 max-w-lg mx-auto space-y-6'}`}>
+      {/* Profile Photo Section (only in non-forced/settings mode) */}
+      {!forced && (
+        <Card className="border border-slate-200 shadow-sm w-full max-w-md" data-testid="profile-photo-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Profile Photo</CardTitle>
+            <CardDescription>Upload a photo for your profile</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProfilePhotoUpload user={user} onUploaded={() => checkAuth()} />
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="border border-slate-200 shadow-sm w-full max-w-md" data-testid="change-password-card">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3 mb-2">
