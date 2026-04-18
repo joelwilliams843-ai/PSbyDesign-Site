@@ -20,6 +20,9 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 import io
 
+# Supabase
+from supabase import create_client as create_supabase_client
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -29,11 +32,33 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# JWT Config
+# JWT Config (legacy - kept for fallback)
 JWT_ALGORITHM = "HS256"
 
 def get_jwt_secret():
     return os.environ["JWT_SECRET"]
+
+# Supabase client
+_supabase_client = None
+_supabase_admin = None
+
+def get_supabase():
+    global _supabase_client
+    if _supabase_client is None:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_ANON_KEY")
+        if url and key:
+            _supabase_client = create_supabase_client(url, key)
+    return _supabase_client
+
+def get_supabase_admin():
+    global _supabase_admin
+    if _supabase_admin is None:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+        if url and key:
+            _supabase_admin = create_supabase_client(url, key)
+    return _supabase_admin
 
 # Object Storage
 STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
@@ -89,7 +114,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str):
     response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
     response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
 
-# Auth dependency
+# Auth dependency - supports BOTH legacy JWT and Supabase tokens
 async def get_current_user(request: Request) -> dict:
     token = request.cookies.get("access_token")
     if not token:
@@ -98,6 +123,35 @@ async def get_current_user(request: Request) -> dict:
             token = auth_header[7:]
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Try Supabase token first
+    sb = get_supabase_admin()
+    if sb:
+        try:
+            sb_user = sb.auth.get_user(token)
+            if sb_user and sb_user.user:
+                email = sb_user.user.email.lower().strip()
+                user = await db.users.find_one({"email": email})
+                if user:
+                    if not user.get("is_active", True):
+                        raise HTTPException(status_code=403, detail="Account deactivated")
+                    user["_id"] = str(user["_id"])
+                    user.pop("password_hash", None)
+                    # Store supabase_uid for future reference
+                    if not user.get("supabase_uid"):
+                        await db.users.update_one(
+                            {"email": email},
+                            {"$set": {"supabase_uid": sb_user.user.id}}
+                        )
+                    return user
+                else:
+                    raise HTTPException(status_code=401, detail="User not found in system. Contact your administrator.")
+        except HTTPException:
+            raise
+        except Exception:
+            pass  # Fall through to legacy JWT
+    
+    # Fallback: legacy JWT
     try:
         payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
         if payload.get("type") != "access":
@@ -125,6 +179,9 @@ async def require_admin(request: Request) -> dict:
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
 
 class CreateParticipantRequest(BaseModel):
     name: str
@@ -166,11 +223,48 @@ api_router = APIRouter(prefix="/api")
 
 @api_router.post("/auth/login")
 async def login(req: LoginRequest, request: Request, response: Response):
+    """Login via Supabase Auth first, fallback to legacy bcrypt."""
     email = req.email.lower().strip()
+    
+    # Try Supabase Auth first
+    sb = get_supabase()
+    if sb:
+        try:
+            sb_resp = sb.auth.sign_in_with_password({"email": email, "password": req.password})
+            if sb_resp and sb_resp.session and sb_resp.user:
+                # Supabase login succeeded - map to MongoDB user
+                mongo_user = await db.users.find_one({"email": email})
+                if not mongo_user:
+                    raise HTTPException(status_code=401, detail="Account not provisioned. Contact your administrator.")
+                if not mongo_user.get("is_active", True):
+                    raise HTTPException(status_code=403, detail="Account has been deactivated.")
+                
+                uid = str(mongo_user["_id"])
+                # Store supabase_uid
+                await db.users.update_one(
+                    {"email": email},
+                    {"$set": {"supabase_uid": sb_resp.user.id, "force_password_change": False}}
+                )
+                
+                return {
+                    "id": uid,
+                    "email": mongo_user["email"],
+                    "name": mongo_user["name"],
+                    "role": mongo_user["role"],
+                    "force_password_change": False,
+                    "access_token": sb_resp.session.access_token,
+                    "refresh_token": sb_resp.session.refresh_token,
+                    "auth_provider": "supabase"
+                }
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.info(f"Supabase login failed for {email}, trying legacy: {e}")
+    
+    # Fallback: Legacy bcrypt login
     ip = request.client.host if request.client else "unknown"
     identifier = f"{ip}:{email}"
     
-    # Check brute force
     attempt = await db.login_attempts.find_one({"identifier": identifier}, {"_id": 0})
     if attempt and attempt.get("count", 0) >= 5:
         last = attempt.get("last_attempt")
@@ -188,9 +282,8 @@ async def login(req: LoginRequest, request: Request, response: Response):
         )
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    # Check if account is active
     if not user.get("is_active", True):
-        raise HTTPException(status_code=403, detail="Account has been deactivated. Contact your administrator.")
+        raise HTTPException(status_code=403, detail="Account has been deactivated.")
     
     await db.login_attempts.delete_one({"identifier": identifier})
     
@@ -206,8 +299,52 @@ async def login(req: LoginRequest, request: Request, response: Response):
         "role": user["role"],
         "force_password_change": user.get("force_password_change", False),
         "access_token": access,
-        "refresh_token": refresh
+        "refresh_token": refresh,
+        "auth_provider": "legacy"
     }
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(req: ForgotPasswordRequest):
+    """Send password reset email via Supabase."""
+    email = req.email.lower().strip()
+    sb = get_supabase()
+    if not sb:
+        raise HTTPException(status_code=503, detail="Password reset service unavailable")
+    
+    # Always return success to prevent email enumeration
+    try:
+        frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+        sb.auth.reset_password_for_email(email, {
+            "redirect_to": f"{frontend_url}/clarity/app/reset-password"
+        })
+    except Exception as e:
+        logger.error(f"Password reset error: {e}")
+    
+    return {"message": "If an account with that email exists, a password reset link has been sent."}
+
+@api_router.post("/auth/supabase/create-user")
+async def supabase_create_user(req: CreateParticipantRequest, request: Request):
+    """Admin creates a Supabase auth user for a participant."""
+    await require_admin(request)
+    email = req.email.lower().strip()
+    
+    sb_admin = get_supabase_admin()
+    if not sb_admin:
+        raise HTTPException(status_code=503, detail="Supabase admin service unavailable")
+    
+    try:
+        sb_resp = sb_admin.auth.admin.create_user({
+            "email": email,
+            "password": req.password,
+            "email_confirm": True,
+            "user_metadata": {"name": req.name, "role": "participant"}
+        })
+        return {"supabase_uid": sb_resp.user.id, "email": email, "message": "Supabase user created"}
+    except Exception as e:
+        error_msg = str(e)
+        if "already been registered" in error_msg.lower() or "already exists" in error_msg.lower():
+            return {"message": "User already exists in Supabase", "email": email}
+        raise HTTPException(status_code=400, detail=f"Failed to create Supabase user: {error_msg}")
 
 @api_router.post("/auth/logout")
 async def logout(response: Response):

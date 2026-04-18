@@ -140,6 +140,11 @@ function AppRoutes() {
         user ? <Navigate to="/clarity/app" replace /> : <LoginPage />
       } />
       <Route path="/clarity/app/change-password" element={<ForcePasswordRoute />} />
+      <Route path="/clarity/app/reset-password" element={
+        <ProtectedRoute>
+          <AppLayout><ChangePasswordPage forced={false} /></AppLayout>
+        </ProtectedRoute>
+      } />
 
       {/* Clarity App Entry - redirect to login or dashboard */}
       <Route path="/clarity/app" element={
