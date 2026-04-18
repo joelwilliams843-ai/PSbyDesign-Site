@@ -39,11 +39,11 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-[#0B7A6F]/10 to-[#0F2B3C]/10 flex items-center justify-center">
+              <div className="rounded-2xl overflow-hidden bg-[#e8edef]">
                 <img
-                  src="https://psbydesign.com/wp-content/uploads/2021/06/Theo-Ja.png"
-                  alt="Theo Gilbert-Jamison"
-                  className="w-full h-full object-cover object-top"
+                  src="https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/i5cpmyvp_Slide1.JPG"
+                  alt="Theo Gilbert-Jamison, Founder of Performance Solutions by Design"
+                  className="w-full h-auto object-contain"
                 />
               </div>
             </div>
