@@ -16,7 +16,7 @@ import {
 import { useState } from 'react';
 
 const participantNav = [
-  { label: 'Dashboard', path: '/clarity/app', icon: LayoutDashboard },
+  { label: 'My Workspace', path: '/clarity/app', icon: LayoutDashboard },
   { label: 'Resources', path: '/clarity/app/resources', icon: FolderOpen },
   { label: 'Schedule', path: '/clarity/app/schedule', icon: CalendarClock },
   { label: 'Community', path: '/clarity/app/community', icon: MessageSquare },

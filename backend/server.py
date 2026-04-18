@@ -643,6 +643,9 @@ async def participant_dashboard(request: Request):
         {"participant_id": uid}, {"_id": 0}
     ).sort("created_at", -1).to_list(10)
     
+    # User's own posts
+    user_posts = await db.posts.find({"user_id": uid}, {"_id": 0}).sort("created_at", -1).to_list(20)
+    
     return {
         "user": user,
         "sessions": sessions,
@@ -651,7 +654,42 @@ async def participant_dashboard(request: Request):
         "progress_percent": int((completed / max(len(sessions), 1)) * 100),
         "next_session": next_session,
         "resources": resources,
-        "schedule_requests": schedule_requests
+        "schedule_requests": schedule_requests,
+        "user_posts": user_posts
+    }
+
+@api_router.get("/dashboard/participant/{participant_id}/workspace")
+async def admin_view_participant_workspace(participant_id: str, request: Request):
+    """Admin can view any participant's workspace."""
+    await require_admin(request)
+    
+    p = await db.users.find_one({"_id": ObjectId(participant_id), "role": "participant"}, {"password_hash": 0})
+    if not p:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    p["_id"] = str(p["_id"])
+    
+    sessions = await db.sessions.find({"participant_id": participant_id}, {"_id": 0}).sort("session_number", 1).to_list(10)
+    completed = sum(1 for s in sessions if s["status"] == "completed")
+    next_session = None
+    for s in sessions:
+        if s["status"] != "completed":
+            next_session = s
+            break
+    
+    resources = await db.resources.find({"participant_id": participant_id, "is_deleted": False}, {"_id": 0}).to_list(50)
+    schedule_requests = await db.schedule_requests.find({"participant_id": participant_id}, {"_id": 0}).sort("created_at", -1).to_list(10)
+    user_posts = await db.posts.find({"user_id": participant_id}, {"_id": 0}).sort("created_at", -1).to_list(20)
+    
+    return {
+        "user": p,
+        "sessions": sessions,
+        "completed_sessions": completed,
+        "total_sessions": len(sessions),
+        "progress_percent": int((completed / max(len(sessions), 1)) * 100),
+        "next_session": next_session,
+        "resources": resources,
+        "schedule_requests": schedule_requests,
+        "user_posts": user_posts
     }
 
 @api_router.get("/dashboard/admin")
