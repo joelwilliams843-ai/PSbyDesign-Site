@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
@@ -32,11 +32,7 @@ export default function ResourceHub() {
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(null);
 
-  useEffect(() => {
-    fetchResources();
-  }, [user]);
-
-  const fetchResources = async () => {
+  const fetchResources = useCallback(async () => {
     if (!user?._id && !user?.id) return;
     try {
       const uid = user._id || user.id;
@@ -47,7 +43,11 @@ export default function ResourceHub() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    fetchResources();
+  }, [fetchResources]);
 
   const handleDownload = async (resource) => {
     setDownloading(resource.id);

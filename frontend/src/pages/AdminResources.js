@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api as axios } from '../contexts/AuthContext';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -27,13 +27,7 @@ export default function AdminResources() {
   const [uploading, setUploading] = useState(false);
   const [uploadType, setUploadType] = useState('');
 
-  useEffect(() => { fetchParticipants(); }, []);
-
-  useEffect(() => {
-    if (selectedParticipant) fetchResources();
-  }, [selectedParticipant]);
-
-  const fetchParticipants = async () => {
+  const fetchParticipants = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API}/participants`);
       setParticipants(data);
@@ -43,16 +37,23 @@ export default function AdminResources() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchResources = async () => {
+  const fetchResources = useCallback(async () => {
+    if (!selectedParticipant) return;
     try {
       const { data } = await axios.get(`${API}/resources/${selectedParticipant}`);
       setResources(data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [selectedParticipant]);
+
+  useEffect(() => { fetchParticipants(); }, [fetchParticipants]);
+
+  useEffect(() => {
+    if (selectedParticipant) fetchResources();
+  }, [selectedParticipant, fetchResources]);
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -380,9 +380,7 @@ function ParticipantDetail({ participant, onClose }) {
   const [uploadType, setUploadType] = useState('');
   const [sessionNotes, setSessionNotes] = useState({});
 
-  useEffect(() => { fetchData(); }, [participant.id]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [sessRes, resRes] = await Promise.all([
         api.get(`${API}/sessions/${participant.id}`),
@@ -395,7 +393,9 @@ function ParticipantDetail({ participant, onClose }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [participant.id]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const markComplete = async (sessionId, notes) => {
     try {

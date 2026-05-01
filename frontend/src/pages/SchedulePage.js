@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -26,9 +26,7 @@ export default function SchedulePage() {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { fetchRequests(); }, [user]);
-
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async () => {
     if (!user?._id && !user?.id) return;
     try {
       const uid = user._id || user.id;
@@ -39,7 +37,9 @@ export default function SchedulePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => { fetchRequests(); }, [fetchRequests]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
