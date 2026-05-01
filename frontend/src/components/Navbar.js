@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { label: 'About', path: '/about' },
   { label: 'Services', path: '/services' },
   { label: 'Industries', path: '/industries' },
-  { label: 'Clarity', path: '/clarity' },
+  { label: 'CLARITY', path: '/clarity' },
   { label: 'Contact', path: '/contact' },
 ];
 
@@ -66,7 +66,7 @@ export default function Navbar() {
               data-testid="nav-clarity-login"
               className="ml-3 px-5 py-2 rounded-md bg-[#0B7A6F] text-white text-[13px] font-semibold tracking-wide hover:bg-[#096B62] transition-colors"
             >
-              Clarity Login
+              CLARITY Login
             </Link>
           </nav>
 
@@ -103,7 +103,7 @@ export default function Navbar() {
               to="/clarity/app"
               className="block px-4 py-3 mt-2 rounded-lg bg-[#0B7A6F] text-white text-sm font-semibold text-center"
             >
-              Clarity Login
+              CLARITY Login
             </Link>
           </nav>
         </div>

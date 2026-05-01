@@ -10,10 +10,10 @@ export default function AboutPage() {
           <div className="max-w-3xl">
             <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-4">About Us</p>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight text-[#0F2B3C]">
-              Raising the bar since 2003
+              Raising the Bar Since 2003
             </h1>
             <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">
-              Headquartered in Atlanta, Georgia, Performance Solutions by Design is the leading provider of service excellence, customer experience, and leadership training, tools, and resources.
+              Headquartered in Atlanta, Georgia, Performance Solutions by Design is the leading provider of service excellence, customer experience, and leadership development tools and resources.
             </p>
           </div>
         </div>

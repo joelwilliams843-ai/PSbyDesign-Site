@@ -27,7 +27,7 @@ export default function Footer() {
                 { label: 'About', path: '/about' },
                 { label: 'Services', path: '/services' },
                 { label: 'Industries', path: '/industries' },
-                { label: 'Clarity', path: '/clarity' },
+                { label: 'CLARITY', path: '/clarity' },
                 { label: 'Contact', path: '/contact' },
               ].map(l => (
                 <li key={l.path}>
@@ -88,7 +88,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Performance Solutions by Design, Inc. All rights reserved.
           </p>
           <Link to="/clarity/app" className="text-xs text-[#0B7A6F] hover:text-[#0EB5A5] font-medium transition-colors">
-            Clarity Platform Login
+            CLARITY Platform Login
           </Link>
         </div>
       </div>

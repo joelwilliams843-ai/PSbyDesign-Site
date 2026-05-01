@@ -54,7 +54,7 @@ export default function LoginPage() {
               CLARITY
             </h1>
             <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-medium mb-8">
-              A Performance Solution by Design
+              by Performance Solutions by Design, Inc.
             </p>
 
             {mode === 'login' && (

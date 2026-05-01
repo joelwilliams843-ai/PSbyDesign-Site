@@ -19,7 +19,7 @@ const BENEFITS = [
   'Secure document management for assessments and reports',
   'Streamlined scheduling and communication',
   'Digital certificate of completion',
-  'Built on PSD\'s Six Principles methodology',
+  'Built on PSBD\'s 7 Point Leadership CLARITY Methodology',
 ];
 
 export default function ClarityLandingPage() {
@@ -38,13 +38,13 @@ export default function ClarityLandingPage() {
               />
             </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-white leading-[1.1]">
-              Clarity
+              CLARITY
             </h1>
             <p className="text-base sm:text-lg text-[#0EB5A5] font-medium mt-3 mb-6">
-              A Performance Solution by Design
+              by Performance Solutions by Design, Inc.
             </p>
             <p className="text-base text-slate-400 leading-relaxed max-w-xl mx-auto mb-10">
-              The executive coaching platform that brings structure, visibility, and accountability to your leadership development journey.
+              An Executive Coaching and Leadership Accelerator designed to help leaders think, communicate, and perform at the executive level.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
@@ -66,30 +66,37 @@ export default function ClarityLandingPage() {
         </div>
       </section>
 
-      {/* What is Clarity */}
+      {/* What is CLARITY */}
       <section className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">What is Clarity</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-[#0B7A6F] font-semibold mb-3">What is CLARITY</p>
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-6">
                 Your coaching journey, structured and visible
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed mb-4">
-                Clarity is a purpose-built digital platform that extends Performance Solutions by Design's executive coaching methodology into a structured, trackable experience.
+                CLARITY is a results-driven Executive Coaching and Leadership Accelerator that helps emerging and high-potential leaders think, communicate, and perform at the executive level — faster, with greater confidence, and with measurable impact.
               </p>
               <p className="text-sm text-slate-500 leading-relaxed mb-6">
-                Each participant moves through a 10-session program with clear milestones, dedicated resources, and direct access to their coach — all within a secure, branded environment.
+                Each participant moves through a 10-session program with clear milestones, dedicated resources, and direct access to their coach — all within a safe, secure environment.
               </p>
               <Link
                 to="/contact"
                 className="text-sm text-[#0B7A6F] hover:text-[#096B62] font-medium inline-flex items-center gap-1.5 transition-colors"
               >
-                Learn how Clarity can work for your organization <ArrowRight size={14} />
+                Learn how CLARITY can work for your organization <ArrowRight size={14} />
               </Link>
             </div>
-            {/* App Preview */}
+            {/* App Preview with Executive Headshot */}
             <div className="rounded-2xl bg-[#F8FAFB] border border-slate-200 p-6 md:p-8 shadow-sm">
+              <div className="mb-5 rounded-xl overflow-hidden aspect-[16/9]">
+                <img
+                  src="https://customer-assets.emergentagent.com/job_progress-hub-204/artifacts/i5cpmyvp_Slide1.JPG"
+                  alt="Theo Gilbert-Jamison, Executive Coach"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
               <div className="aspect-[16/10] rounded-lg bg-white border border-slate-100 shadow-inner flex items-center justify-center">
                 <div className="text-center p-6">
                   <div className="w-14 h-14 rounded-2xl bg-[#0B7A6F]/10 flex items-center justify-center mx-auto mb-4">
@@ -119,9 +126,9 @@ export default function ClarityLandingPage() {
           </h2>
           <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
             {[
-              { label: 'Executive Leaders', desc: 'C-suite and senior leaders developing strategic capabilities' },
-              { label: 'HR & L&D Teams', desc: 'Teams managing leadership development programs at scale' },
-              { label: 'Coaching Participants', desc: 'Individuals engaged in structured coaching programs' },
+              { label: 'Executive Leaders', desc: 'Preparing for C-Level and Senior Leadership roles' },
+              { label: 'High-Potential Leaders', desc: 'On the fast-track to greater strategic roles within the organization' },
+              { label: 'Mid-Managers', desc: 'With the potential to drive the future' },
             ].map(t => (
               <div key={t.label}>
                 <p className="text-sm font-semibold text-[#0F2B3C] mb-2">{t.label}</p>
@@ -187,10 +194,10 @@ export default function ClarityLandingPage() {
       <section className="py-20 md:py-28">
         <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0F2B3C] mb-4">
-            Ready to bring Clarity to your coaching program?
+            Ready to bring CLARITY to your coaching program?
           </h2>
           <p className="text-base text-slate-500 max-w-lg mx-auto mb-8">
-            Contact us to schedule a demo and see how Clarity can transform your executive coaching experience.
+            Contact us to schedule a demo and see how CLARITY can transform your executive coaching experience.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link

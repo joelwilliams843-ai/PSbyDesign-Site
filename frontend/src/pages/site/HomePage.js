@@ -45,8 +45,8 @@ export default function HomePage() {
                 Performance Solutions by Design
               </p>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight text-[#0F2B3C]">
-                Raising the bar from average to{' '}
-                <span className="text-[#0B7A6F]">extraordinary</span>
+                Raising the Bar from Average to{' '}
+                <span className="text-[#0B7A6F]">Extraordinary</span>
               </h1>
               <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed max-w-md">
                 We help leaders and organizations elevate leadership, service standards, and customer experience through customized consulting, coaching, and learning solutions.
@@ -208,7 +208,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Clarity Teaser */}
+      {/* CLARITY Teaser */}
       <section className="bg-[#0F2B3C] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-3xl mx-auto text-center">
@@ -216,13 +216,13 @@ export default function HomePage() {
               Introducing
             </p>
             <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white mb-2">
-              Clarity
+              CLARITY
             </h2>
             <p className="text-sm text-[#0EB5A5] font-medium mb-6">
-              A Performance Solution by Design
+              by Performance Solutions by Design, Inc.
             </p>
             <p className="text-base text-slate-400 leading-relaxed mb-10 max-w-xl mx-auto">
-              A structured 10-session executive coaching platform that extends our consulting philosophy into a digital experience. Track progress, access resources, and engage with your coach — all in one place.
+              An Executive Coaching and Leadership Accelerator designed to help leaders think, communicate, and perform at the executive level. Track progress, access resources, and engage with your coach — all in one place.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
